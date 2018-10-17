@@ -1,8 +1,8 @@
-import { BigNumber } from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 
 /**
  * @desc count value's number of decimals places
- * @param  {String|String}   value
+ * @param  {String|Number}   value
  * @return {Number}
  */
 export const countDecimalPlaces = (value: string | number): number =>
@@ -148,7 +148,7 @@ export const subtract = (numberOne: number, numberTwo: number): string =>
  */
 export const convertAmountToRawNumber = (
   value: string | number,
-  decimals = 18
+  decimals: number = 18
 ): string =>
   new BigNumber(`${value}`).times(new BigNumber('10').pow(decimals)).toString()
 
@@ -160,7 +160,7 @@ export const convertAmountToRawNumber = (
  */
 export const convertAmountFromRawNumber = (
   value: string | number,
-  decimals = 18
+  decimals: number = 18
 ): string =>
   new BigNumber(`${value}`)
     .dividedBy(new BigNumber('10').pow(decimals))
