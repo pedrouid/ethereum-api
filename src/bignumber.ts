@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 
 /**
  * @desc count value's number of decimals places
- * @param  {String}   value
+ * @param  {String|String}   value
  * @return {Number}
  */
 export const countDecimalPlaces = (value: string | number): number =>
@@ -10,7 +10,7 @@ export const countDecimalPlaces = (value: string | number): number =>
 
 /**
  * @desc convert from number to string
- * @param  {Number}  value
+ * @param  {String|Number}  value
  * @return {String}
  */
 export const convertNumberToString = (value: string | number): string =>
@@ -18,7 +18,7 @@ export const convertNumberToString = (value: string | number): string =>
 
 /**
  * @desc convert from string to number
- * @param  {String}  value
+ * @param  {String|Number}  value
  * @return {Number}
  */
 export const convertStringToNumber = (value: string | number): number =>
@@ -34,7 +34,7 @@ export const convertHexToString = (hex: string): string =>
 
 /**
  * @desc convert number to string to hex
- * @param  {String} value
+ * @param  {String|Number} value
  * @return {String}
  */
 export const convertStringToHex = (value: string | number): string =>
@@ -143,6 +143,7 @@ export const subtract = (numberOne: number, numberTwo: number): string =>
 /**
  * @desc convert from amount value to raw number format
  * @param  {String|Number}  value
+ * @param  {Number}         decimals
  * @return {String}
  */
 export const convertAmountToRawNumber = (
@@ -153,11 +154,12 @@ export const convertAmountToRawNumber = (
 
 /**
  * @desc convert to amount value from raw number format
- * @param  {BigNumber}  value
+ * @param  {String|Number}  value
+ * @param  {Number}         decimals
  * @return {String}
  */
 export const convertAmountFromRawNumber = (
-  value: BigNumber,
+  value: string | number,
   decimals = 18
 ): string =>
   new BigNumber(`${value}`)
@@ -169,7 +171,7 @@ export const convertAmountFromRawNumber = (
  * @param  {String}   value
  * @param  {Number}   decimals
  * @param  {Number}   buffer
- * @return {String}
+ * @return {String|Null}
  */
 export const handleSignificantDecimals = (
   value: string,
