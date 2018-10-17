@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { convertHexToString } from './bignumber';
-import { getNakedAddress, getDataString } from './utilities';
+import axios from 'axios'
+import { convertHexToString } from './bignumber'
+import { getNakedAddress, getDataString } from './utilities'
 
 const erc20contract = {
   transfer: {
@@ -11,29 +11,29 @@ const erc20contract = {
     method: 'balanceOf(address)',
     hash: '0x70a08231'
   }
-};
+}
 
 /**
  * @desc infura rpc request ethereum balance
- * @param  {String}  [address='']
- * @param  {String}  [network='mainnet']
+ * @param  {String}  [address = '']
+ * @param  {String}  [network = 'mainnet']
  * @return {Promise}
  */
 export const infuraGetEthereumBalance = async (
-  address = '',
-  network = 'mainnet',
+  address: string = '',
+  network: string = 'mainnet',
   block = 'latest'
-) => {
+): Promise<any> => {
   try {
     const response = await axios.get(
       `https://api.infura.io/v1/jsonrpc/${network}/eth_getBalance?params=["${address}","${block}"]`
-    );
-    const result = convertHexToString(response.data.result);
-    return result;
+    )
+    const result = convertHexToString(response.data.result)
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 /**
  * @desc infura rpc request transaction count
@@ -42,20 +42,20 @@ export const infuraGetEthereumBalance = async (
  * @return {Promise}
  */
 export const infuraGetTransactionCount = async (
-  address = '',
-  network = 'mainnet',
+  address: string = '',
+  network: string = 'mainnet',
   block = 'pending'
-) => {
+): Promise<any> => {
   try {
     const response = await axios.get(
       `https://api.infura.io/v1/jsonrpc/${network}/eth_getTransactionCount?params=["${address}","${block}"]`
-    );
-    const result = convertHexToString(response.data.result);
-    return result;
+    )
+    const result = convertHexToString(response.data.result)
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 /**
  * @desc infura rpc request token balance
@@ -65,24 +65,24 @@ export const infuraGetTransactionCount = async (
  * @return {Promise}
  */
 export const infuraCallTokenBalance = async (
-  accountAddress = '',
-  tokenAddress = '',
-  network = 'mainnet'
-) => {
+  accountAddress: string = '',
+  tokenAddress: string = '',
+  network: string = 'mainnet'
+): Promise<any> => {
   try {
-    const balanceMethodHash = erc20contract.balanceOf.hash;
+    const balanceMethodHash = erc20contract.balanceOf.hash
     const dataString = getDataString(balanceMethodHash, [
       getNakedAddress(accountAddress)
-    ]);
+    ])
     const response = await axios.get(
       `https://api.infura.io/v1/jsonrpc/${network}/eth_call?params=[{"to":"${tokenAddress}","data":"${dataString}"},"latest"]`
-    );
-    const result = convertHexToString(response.data.result);
-    return result;
+    )
+    const result = convertHexToString(response.data.result)
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 /**
  * @desc infura rpc request transaction by hash
@@ -92,18 +92,18 @@ export const infuraCallTokenBalance = async (
  */
 export const infuraGetTransactionByHash = async (
   hash = '',
-  network = 'mainnet'
-) => {
+  network: string = 'mainnet'
+): Promise<any> => {
   try {
     const response = await axios.get(
       `https://api.infura.io/v1/jsonrpc/${network}/eth_getTransactionByHash?params=["${hash}"]`
-    );
-    const result = response.data.result;
-    return result;
+    )
+    const result = response.data.result
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 /**
  * @desc infura rpc request block by hash
@@ -111,14 +111,17 @@ export const infuraGetTransactionByHash = async (
  * @param  {String}  [network='mainnet']
  * @return {Promise}
  */
-export const infuraGetBlockByHash = async (hash = '', network = 'mainnet') => {
+export const infuraGetBlockByHash = async (
+  hash = '',
+  network: string = 'mainnet'
+): Promise<any> => {
   try {
     const response = await axios.get(
       `https://api.infura.io/v1/jsonrpc/${network}/eth_getBlockByHash?params=["${hash}", false]`
-    );
-    const result = response.data.result;
-    return result;
+    )
+    const result = response.data.result
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}

@@ -1,10 +1,6 @@
-import axios from 'axios';
-import { infuraGetEthereumBalance, infuraCallTokenBalance } from './infura';
-import {
-  convertStringToNumber,
-  convertAmountToDisplay,
-  convertAssetAmountToBigNumber
-} from './bignumber';
+import axios from 'axios'
+import { infuraGetEthereumBalance, infuraCallTokenBalance } from './infura'
+import { convertAmountToRawNumber, convertStringToNumber } from './bignumber'
 
 const proxyGetAccountBalances = async (address = '', network = 'mainnet') => {
   try {
@@ -12,8 +8,8 @@ const proxyGetAccountBalances = async (address = '', network = 'mainnet') => {
       `https://${
         network === 'mainnet' ? `api` : network
       }.trustwalletapp.com/tokens?address=${address}`
-    );
-    const ethereumBalance = await infuraGetEthereumBalance(address, network);
+    )
+    const ethereumBalance = await infuraGetEthereumBalance(address, network)
     const ethereum = {
       balance: ethereumBalance,
       contract: {
@@ -23,78 +19,72 @@ const proxyGetAccountBalances = async (address = '', network = 'mainnet') => {
         decimals: 18,
         symbol: 'ETH'
       }
-    };
-    let tokens = [];
+    }
+    let tokens: any = []
     if (data.docs && data.docs.length) {
       tokens = await Promise.all(
-        data.docs.map(async token => {
+        data.docs.map(async (token: any) => {
           const balance = await infuraCallTokenBalance(
             address,
             token.contract.address,
             network
-          );
-          return { ...token, balance };
+          )
+          return { ...token, balance }
         })
-      );
+      )
     }
-    let assets = [ethereum, ...tokens];
+    let assets = [ethereum, ...tokens]
     assets = await Promise.all(
       assets.map(async assetData => {
         const name = !assetData.contract.name.startsWith('0x')
           ? assetData.contract.name
-          : assetData.contract.symbol || 'Unknown Token';
+          : assetData.contract.symbol || 'Unknown Token'
         const asset = {
           name: name,
           symbol: assetData.contract.symbol || '———',
           address: assetData.contract.address || null,
           decimals: convertStringToNumber(assetData.contract.decimals)
-        };
-        const assetBalance = convertAssetAmountToBigNumber(
+        }
+        const balance = convertAmountToRawNumber(
           assetData.balance,
           asset.decimals
-        );
+        )
         return {
           ...asset,
-          balance: {
-            amount: assetBalance,
-            display: convertAmountToDisplay(assetBalance, null, {
-              symbol: asset.symbol,
-              decimals: asset.decimals
-            })
-          },
+          balance: balance,
           native: null
-        };
+        }
       })
-    );
+    )
 
     assets = assets.filter(
       asset => !!Number(asset.balance.amount) || asset.symbol === 'ETH'
-    );
+    )
 
     return {
       address: address,
       type: '',
       assets: assets,
       total: null
-    };
+    }
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
-export const handler = async (event, context, callback) => {
+export const handler = async (event: any, context: any, callback: Function) => {
   try {
-    const { address, network } = event.queryStringParameters;
-    const data = await proxyGetAccountBalances(address, network);
+    const { address, network } = event.queryStringParameters
+    const data = await proxyGetAccountBalances(address, network)
     callback(null, {
       statusCode: 200,
       body: JSON.stringify(data)
-    });
+    })
   } catch (error) {
-    console.error(error);
+    console.error(error)
     callback(null, {
       statusCode: 500,
       body: 'Something went wrong'
-    });
+    })
   }
-};
+}

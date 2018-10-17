@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/bignumber.js": "^5.0.0",
     "@types/node": "^10.11.7",
+    "@types/redis": "^2.8.7",
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
     "express": "^4.16.4",

@@ -1,7 +1,6 @@
 import * as path from 'path'
 console.log(`Hello ${path.resolve(process.cwd())}!`)
 
-
 // import express from 'express';
 // // const redisClient = require('./redis');
 //
