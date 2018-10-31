@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "start": "babel-node --extensions '.ts,.tsx' src/index.ts"
+    "start": "babel-node --extensions '.ts,.tsx' src/index.ts",
+    "test": "mocha --require ./babel-polyfill.js test/**/*.spec.ts"
   },
   "keywords": [],
   "author": "",
@@ -12,7 +13,7 @@
   "dependencies": {
     "@types/bignumber.js": "^5.0.0",
     "@types/express": "^4.16.0",
-    "@types/node": "^10.11.7",
+    "@types/node": "^10.12.0",
     "@types/redis": "^2.8.7",
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
@@ -23,14 +24,21 @@
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
     "@babel/node": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-typescript": "^7.1.0",
-    "eslint": "^5.6.1",
+    "@babel/register": "^7.0.0",
+    "@types/chai": "^4.1.6",
+    "@types/mocha": "^5.2.5",
+    "chai": "^4.2.0",
+    "eslint": "^5.8.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "isomorphic-fetch": "^2.2.1",
+    "mocha": "^5.2.0",
     "tslint": "^5.11.0",
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.1.3"
