@@ -36,16 +36,16 @@ export const capitalize = (value: string): string =>
     .join(' ')
 
 /**
- * @desc pad string to specific width and padding
+ * @desc pad string to specific length and padding
  * @param  {String} n
- * @param  {Number} width
+ * @param  {Number} length
  * @param  {String} z
  * @return {String}
  */
-export const padLeft = (n: string, width: number, z?: string): string => {
+export const padLeft = (n: string, length: number, z?: string): string => {
   z = z || '0'
   n = n + ''
-  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
+  return n.length >= length ? n : new Array(length - n.length + 1).join(z) + n
 }
 
 /**

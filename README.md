@@ -1,1 +1,3 @@
-# ethereum-indexer
+# ethereum-api
+
+Ethereum Blockchain API Aggregator

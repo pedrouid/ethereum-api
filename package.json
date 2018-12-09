@@ -1,7 +1,7 @@
 {
-  "name": "ethereum-indexer",
+  "name": "ethereum-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Ethereum Blockchain API Aggregator",
   "main": "src/index.ts",
   "scripts": {
     "start": "babel-node --extensions '.ts,.tsx' src/index.ts",
