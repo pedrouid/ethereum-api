@@ -4,7 +4,7 @@ Ethereum Blockchain API Aggregator
 
 ## API
 
-### Get Account Assets
+### Get Account Assets
 Required Params: address, chainId
 
 ```bash
@@ -32,7 +32,7 @@ GET https://ethereum-api.xyz/account-assets?address=0xfeBD6abD30D8E1AD477957C376
 }
 ```
 
-### Get Account Transactions
+### Get Account Transactions
 Required Params: address, chainId
 
 ```bash
@@ -159,7 +159,7 @@ GET https://ethereum-api.xyz/account-transactions?address=0xfeBD6abD30D8E1AD4779
 }
 ```
 
-### Get Account Nonce
+### Get Account Nonce
 Required Params: address, chainId
 
 ```bash
