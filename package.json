@@ -20,7 +20,8 @@
     "dev": "babel-node --extensions '.ts' src/index.ts",
     "build": "babel ./src --extensions '.ts' --out-dir ./build",
     "test": "mocha --require ./babel-polyfill.js test/**/*.spec.ts",
-    "start": "node ./build"
+    "start": "node ./build",
+    "deploy": "npm run build && now --public"
   },
   "dependencies": {
     "axios": "^0.18.0",

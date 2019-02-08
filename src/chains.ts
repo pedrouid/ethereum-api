@@ -35,7 +35,7 @@ const supportedChains: IChainData[] = [
     network: 'goerli',
     chain_id: 5,
     network_id: 5,
-    rpc_url: ''
+    rpc_url: 'https://rpc.goerli.mudit.blog/'
   },
   {
     name: 'Ethereum Kovan',
