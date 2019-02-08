@@ -7,6 +7,7 @@ import { apiGetGasPrices } from './gas-price'
 import { apiGetAccountNonce } from './rpc'
 import { sanitizeHex } from './utilities'
 import { convertStringToNumber } from './bignumber'
+import supportedChains from './chains'
 
 const app = fastify({ logger: config.debug })
 
@@ -101,6 +102,13 @@ app.get('/gas-prices', async (req, res) => {
   res.status(200).send({
     success: true,
     result: gasPrices
+  })
+})
+
+app.get('/supported-chains', async (req, res) => {
+  res.status(200).send({
+    success: true,
+    result: supportedChains
   })
 })
 
