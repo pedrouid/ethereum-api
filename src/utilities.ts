@@ -1,10 +1,8 @@
-/**
- * @desc debounce api request
- * @param  {Function}  request
- * @param  {Array}     params
- * @param  {Number}    timeout
- * @return {Promise}
- */
+import utf8 from 'utf8'
+import { IChainData } from './types'
+import { isNumber } from './bignumber'
+import supportedChains from './chains'
+
 export const debounceRequest = (
   request: Function,
   params: Array<any>,
@@ -21,11 +19,6 @@ export const debounceRequest = (
   )
 }
 
-/**
- * @desc capitalize string
- * @param  {String} [string]
- * @return {String}
- */
 export const capitalize = (value: string): string =>
   value
     .split(' ')
@@ -35,25 +28,18 @@ export const capitalize = (value: string): string =>
     )
     .join(' ')
 
-/**
- * @desc pad string to specific length and padding
- * @param  {String} n
- * @param  {Number} length
- * @param  {String} z
- * @return {String}
- */
 export const padLeft = (n: string, length: number, z?: string): string => {
   z = z || '0'
   n = n + ''
   return n.length >= length ? n : new Array(length - n.length + 1).join(z) + n
 }
 
-/**
- * @desc get ethereum contract call data string
- * @param  {String} func
- * @param  {Array}  arrVals
- * @return {String}
- */
+export const padRight = (n: string, length: number, z?: string): string => {
+  z = z || '0'
+  n = n + ''
+  return n.length >= length ? n : n + new Array(length - n.length + 1).join(z)
+}
+
 export const getDataString = (func: string, arrVals: Array<any>): string => {
   let val = ''
   for (let i = 0; i < arrVals.length; i++) val += padLeft(arrVals[i], 64)
@@ -61,22 +47,73 @@ export const getDataString = (func: string, arrVals: Array<any>): string => {
   return data
 }
 
-/**
- * @desc get naked ethereum address
- * @param  {String} address
- * @return {String}
- */
 export const getNakedAddress = (address: string): string =>
   address.toLowerCase().replace('0x', '')
 
-/** s
- * @desc sanitize hexadecimal string
- * @param  {String} hex
- * @return {String}
- */
+export const removeHexPrefix = (hex: string): string =>
+  hex.toLowerCase().replace('0x', '')
+
 export const sanitizeHex = (hex: string): string => {
   hex = hex.substring(0, 2) === '0x' ? hex.substring(2) : hex
   if (hex === '') return ''
   hex = hex.length % 2 !== 0 ? '0' + hex : hex
   return '0x' + hex
+}
+
+export function getChainData (chainId: number): IChainData {
+  const chainData = supportedChains.filter(
+    (chain: any) => chain.chain_id === chainId
+  )[0]
+
+  if (!chainData) {
+    throw new Error('ChainId missing or not supported')
+  }
+
+  return chainData
+}
+
+export function payloadId (): number {
+  const datePart: number = new Date().getTime() * Math.pow(10, 3)
+  const extraPart: number = Math.floor(Math.random() * Math.pow(10, 3))
+  const id: number = datePart + extraPart
+  return id
+}
+
+export const isHexStrict = (hex: string) => {
+  return (
+    (typeof hex === 'string' || isNumber(hex)) && /^(-)?0x[0-9a-f]*$/i.test(hex)
+  )
+}
+
+export const hexToUtf8 = (hex: string): string => {
+  if (!isHexStrict(hex)) {
+    throw new Error(`The parameter "${hex}" must be a valid HEX string.`)
+  }
+
+  let str = ''
+  let code = 0
+  hex = hex.replace(/^0x/i, '')
+
+  // remove 00 padding from either side
+  hex = hex.replace(/^(?:00)*/, '')
+  hex = hex
+    .split('')
+    .reverse()
+    .join('')
+  hex = hex.replace(/^(?:00)*/, '')
+  hex = hex
+    .split('')
+    .reverse()
+    .join('')
+
+  const l = hex.length
+
+  for (let i = 0; i < l; i += 2) {
+    code = parseInt(hex.substr(i, 2), 16)
+    // if (code !== 0) {
+    str += String.fromCharCode(code)
+    // }
+  }
+
+  return utf8.decode(str)
 }
