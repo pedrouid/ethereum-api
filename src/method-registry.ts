@@ -51,8 +51,6 @@ export const lookupMethod = async (
   const functionHash = '0xb46bcdaa'
   const dataString = functionHash + padRight(removeHexPrefix(methodHash), 64)
 
-  console.log('dataString', dataString)
-
   const response = await axios.post(rpcUrl, {
     jsonrpc: '2.0',
     id: payloadId(),
@@ -70,12 +68,10 @@ export const lookupMethod = async (
     const signature = hexToUtf8(response.data.result)
       .trimLeft()
       .trimRight()
-    console.log('signature', signature)
     if (signature) {
       const parsed = parseSignature(signature)
 
       result = { signature, ...parsed }
-      // console.log('result', result)
     }
   }
   return result

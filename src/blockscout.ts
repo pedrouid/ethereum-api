@@ -215,14 +215,6 @@ export async function apiGetAccountTransactions (
         }
       }
 
-      // for (let i = 0; i < transactions.length; i++) {
-      //   if (tokenTx.hash.toLowerCase() === transactions[i].hash.toLowerCase()) {
-      //     transactions[i].operations.push(operation)
-      //     matchingTx = true
-      //     break
-      //   }
-      // }
-
       if (!matchingTx) {
         const asset: IAssetData = {
           symbol: 'ETH',
