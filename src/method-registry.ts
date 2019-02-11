@@ -1,5 +1,11 @@
 import axios from 'axios'
-import { padRight, removeHexPrefix, payloadId, hexToUtf8 } from './utilities'
+import {
+  padRight,
+  removeHexPrefix,
+  payloadId,
+  hexToUtf8,
+  getChainData
+} from './utilities'
 import { IMethod } from './types'
 
 function parseSignature (signature: string) {
@@ -45,8 +51,7 @@ export const lookupMethod = async (
 
   const chainId = 1
   const registryAddress = registryMap[chainId]
-
-  const rpcUrl = 'https://mainnet.infura.io'
+  const rpcUrl = getChainData(chainId).rpc_url
 
   const functionHash = '0xb46bcdaa'
   const dataString = functionHash + padRight(removeHexPrefix(methodHash), 64)
@@ -65,14 +70,28 @@ export const lookupMethod = async (
   })
 
   if (response.data && response.data.result) {
-    const signature = hexToUtf8(response.data.result)
-      .trimLeft()
-      .trimRight()
+    const signature = hexToUtf8(response.data.result).trim()
     if (signature) {
       const parsed = parseSignature(signature)
 
       result = { signature, ...parsed }
     }
+  } else {
+    const response = await axios.get(
+      `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${removeHexPrefix(
+        methodHash
+      )}`
+    )
+
+    if (response.data) {
+      const signature = response.data.trim()
+      if (signature) {
+        const parsed = parseSignature(signature)
+
+        result = { signature, ...parsed }
+      }
+    }
   }
+
   return result
 }
