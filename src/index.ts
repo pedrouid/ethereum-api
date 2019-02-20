@@ -4,7 +4,7 @@ import cors from 'fastify-cors'
 import config from './config'
 import { apiGetAccountAssets, apiGetAccountTransactions } from './blockscout'
 import { apiGetGasPrices } from './gas-price'
-import { apiGetAccountNonce } from './rpc'
+import { apiGetAccountNonce, apiGetGasLimit } from './rpc'
 import { sanitizeHex } from './utilities'
 import { convertStringToNumber } from './bignumber'
 import supportedChains from './chains'
@@ -25,14 +25,16 @@ app.get('/account-assets', async (req, res) => {
   if (!address || typeof address !== 'string') {
     res.status(500).send({
       success: false,
-      result: 'Missing address parameter'
+      error: 'Internal Server Error',
+      message: 'Missing or invalid address parameter'
     })
   }
 
   if (!chainId || typeof chainId !== 'number') {
     res.status(500).send({
       success: false,
-      result: 'Missing chainId parameter'
+      error: 'Internal Server Error',
+      message: 'Missing or invalid chainId parameter'
     })
   }
 
@@ -51,14 +53,16 @@ app.get('/account-transactions', async (req, res) => {
   if (!address || typeof address !== 'string') {
     res.status(500).send({
       success: false,
-      result: 'Missing address parameter'
+      error: 'Internal Server Error',
+      message: 'Missing or invalid address parameter'
     })
   }
 
   if (!chainId || typeof chainId !== 'number') {
     res.status(500).send({
       success: false,
-      result: 'Missing chainId parameter'
+      error: 'Internal Server Error',
+      message: 'Missing or invalid chainId parameter'
     })
   }
 
@@ -77,14 +81,16 @@ app.get('/account-nonce', async (req, res) => {
   if (!address || typeof address !== 'string') {
     res.status(500).send({
       success: false,
-      result: 'Missing address parameter'
+      error: 'Internal Server Error',
+      message: 'Missing or invalid address parameter'
     })
   }
 
   if (!chainId || typeof chainId !== 'number') {
     res.status(500).send({
       success: false,
-      result: 'Missing chainId parameter'
+      error: 'Internal Server Error',
+      message: 'Missing or invalid chainId parameter'
     })
   }
 
@@ -93,6 +99,46 @@ app.get('/account-nonce', async (req, res) => {
   res.status(200).send({
     success: true,
     result: nonce
+  })
+})
+
+app.get('/gas-limit', async (req, res) => {
+  const contractAddress = sanitizeHex(req.query.contractAddress)
+  console.log('contractAddress', contractAddress)
+  const data = sanitizeHex(req.query.data)
+  console.log('data', data)
+  const chainId = convertStringToNumber(req.query.chainId)
+  console.log('chainId', chainId)
+
+  if (!contractAddress || typeof contractAddress !== 'string') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid contractAddress parameter'
+    })
+  }
+
+  if (!data || typeof data !== 'string') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid data parameter'
+    })
+  }
+
+  if (!chainId || typeof chainId !== 'number') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid chainId parameter'
+    })
+  }
+
+  const gasLimit = await apiGetGasLimit(contractAddress, data)
+
+  res.status(200).send({
+    success: true,
+    result: gasLimit
   })
 })
 

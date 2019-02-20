@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { getChainData, payloadId } from './utilities'
-import { convertHexToString } from './bignumber'
+import { convertHexToString, convertStringToNumber } from './bignumber'
 
 export const apiGetAccountNonce = async (
   address: string,
   chainId: number
-): Promise<any> => {
+): Promise<number> => {
   const rpcUrl = getChainData(chainId).rpc_url
 
   if (!rpcUrl && typeof rpcUrl !== 'string') {
@@ -19,6 +19,29 @@ export const apiGetAccountNonce = async (
     params: [address, 'pending']
   })
 
-  const nonce = convertHexToString(response.data.result)
+  const nonce = convertStringToNumber(convertHexToString(response.data.result))
   return nonce
+}
+
+export const apiGetGasLimit = async (
+  contractAddress: string,
+  data: string
+): Promise<number> => {
+  const rpcUrl = 'https://mainnet.infura.io'
+
+  const response = await axios.post(rpcUrl, {
+    jsonrpc: '2.0',
+    id: payloadId(),
+    method: 'eth_estimateGas',
+    params: [
+      {
+        to: contractAddress,
+        data
+      }
+    ]
+  })
+  const gasLimit = convertStringToNumber(
+    convertHexToString(response.data.result)
+  )
+  return gasLimit
 }
