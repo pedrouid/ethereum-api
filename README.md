@@ -4,9 +4,10 @@ Ethereum Blockchain API Aggregator
 
 ## API
 
-- GET `/account-assets?address={address}?chainId={chainId}`
-- GET `/account-transactions?address={address}?chainId={chainId}`
-- GET `/account-nonce?address={address}?chainId={chainId}`
+- GET `/account-assets?address={address}&chainId={chainId}`
+- GET `/account-transactions?address={address}&chainId={chainId}`
+- GET `/account-nonce?address={address}&chainId={chainId}`
+- GET `/gas-limit?contractAddress={contractAddress}&data={data}&chainId={chainId}`
 - GET `/gas-prices`
 - GET `/supported-chains`
 
