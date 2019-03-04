@@ -76,8 +76,8 @@ const supportedChains: IChainData[] = [
   {
     name: 'xDAI Chain',
     short_name: 'xdai',
-    chain: 'xDAI',
-    network: 'mainnet',
+    chain: 'POA',
+    network: 'dai',
     chain_id: 100,
     network_id: 1,
     rpc_url: 'https://dai.poa.network'

@@ -37,13 +37,22 @@ app.get('/account-assets', async (req, res) => {
       message: 'Missing or invalid chainId parameter'
     })
   }
+  try {
+    const assets = await apiGetAccountAssets(address, chainId)
 
-  const assets = await apiGetAccountAssets(address, chainId)
+    res.status(200).send({
+      success: true,
+      result: assets
+    })
+  } catch (error) {
+    console.error(error)
 
-  res.status(200).send({
-    success: true,
-    result: assets
-  })
+    res.status(500).send({
+      success: true,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
 })
 
 app.get('/account-transactions', async (req, res) => {
@@ -66,12 +75,22 @@ app.get('/account-transactions', async (req, res) => {
     })
   }
 
-  const transactions = await apiGetAccountTransactions(address, chainId)
+  try {
+    const transactions = await apiGetAccountTransactions(address, chainId)
 
-  res.status(200).send({
-    success: true,
-    result: transactions
-  })
+    res.status(200).send({
+      success: true,
+      result: transactions
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: true,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
 })
 
 app.get('/account-nonce', async (req, res) => {
@@ -94,21 +113,28 @@ app.get('/account-nonce', async (req, res) => {
     })
   }
 
-  const nonce = await apiGetAccountNonce(address, chainId)
+  try {
+    const nonce = await apiGetAccountNonce(address, chainId)
 
-  res.status(200).send({
-    success: true,
-    result: nonce
-  })
+    res.status(200).send({
+      success: true,
+      result: nonce
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: true,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
 })
 
 app.get('/gas-limit', async (req, res) => {
   const contractAddress = sanitizeHex(req.query.contractAddress)
-  console.log('contractAddress', contractAddress)
   const data = sanitizeHex(req.query.data)
-  console.log('data', data)
   const chainId = convertStringToNumber(req.query.chainId)
-  console.log('chainId', chainId)
 
   if (!contractAddress || typeof contractAddress !== 'string') {
     res.status(500).send({
@@ -134,21 +160,41 @@ app.get('/gas-limit', async (req, res) => {
     })
   }
 
-  const gasLimit = await apiGetGasLimit(contractAddress, data)
+  try {
+    const gasLimit = await apiGetGasLimit(contractAddress, data)
 
-  res.status(200).send({
-    success: true,
-    result: gasLimit
-  })
+    res.status(200).send({
+      success: true,
+      result: gasLimit
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: true,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
 })
 
 app.get('/gas-prices', async (req, res) => {
-  const gasPrices = await apiGetGasPrices()
+  try {
+    const gasPrices = await apiGetGasPrices()
 
-  res.status(200).send({
-    success: true,
-    result: gasPrices
-  })
+    res.status(200).send({
+      success: true,
+      result: gasPrices
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: true,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
 })
 
 app.get('/supported-chains', async (req, res) => {
@@ -160,8 +206,5 @@ app.get('/supported-chains', async (req, res) => {
 
 app.listen(config.port, (error: Error) => {
   if (error) {
-    return console.log('Something went wrong', error)
   }
-
-  console.log('Server listening on port', config.port)
 })

@@ -63,7 +63,7 @@ export async function apiGetAccountAssets (
   const chainData = getChainData(chainId)
 
   const nativeCurrency: IAssetData =
-    chainData.chain.toLowerCase() !== 'dai'
+    chainData.short_name.toLowerCase() !== 'xdai'
       ? {
         symbol: 'ETH',
         name: 'Ethereum',
@@ -72,12 +72,13 @@ export async function apiGetAccountAssets (
         balance: ''
       }
       : {
-        symbol: 'DAI',
-        name: 'Dai Stablecoin v1.0',
+        symbol: 'xDAI',
+        name: 'xDAI',
         decimals: '18',
-        contractAddress: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
+        contractAddress: '',
         balance: ''
       }
+
   const balanceRes = await apiGetAccountBalance(address, chainId)
   nativeCurrency.balance = balanceRes.data.result
 
