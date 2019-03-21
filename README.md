@@ -9,6 +9,7 @@ Ethereum Blockchain API Aggregator
 - GET `/account-nonce?address={address}&chainId={chainId}`
 - GET `/gas-limit?contractAddress={contractAddress}&data={data}&chainId={chainId}`
 - GET `/gas-prices`
+- GET `/block-number?chainId={chainId}`
 - GET `/supported-chains`
 
 ## Examples
@@ -223,6 +224,20 @@ GET https://ethereum-api.xyz/gas-prices
             "price": 25
         }
     }
+}
+```
+
+### Get Block Number
+
+Required Params: chainId
+
+```bash
+GET https://ethereum-api.xyz/block-number?chainId=1
+
+# Response
+{
+    "success": true,
+    "result": 7412670
 }
 ```
 

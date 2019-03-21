@@ -4,7 +4,7 @@ import cors from 'fastify-cors'
 import config from './config'
 import { apiGetAccountAssets, apiGetAccountTransactions } from './blockscout'
 import { apiGetGasPrices } from './gas-price'
-import { apiGetAccountNonce, apiGetGasLimit } from './rpc'
+import { apiGetAccountNonce, apiGetGasLimit, apiGetBlockNumber } from './rpc'
 import { sanitizeHex } from './utilities'
 import { convertStringToNumber } from './bignumber'
 import supportedChains from './chains'
@@ -185,6 +185,35 @@ app.get('/gas-prices', async (req, res) => {
     res.status(200).send({
       success: true,
       result: gasPrices
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: true,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
+})
+
+app.get('/block-number', async (req, res) => {
+  const chainId = convertStringToNumber(req.query.chainId)
+
+  if (!chainId || typeof chainId !== 'number') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid chainId parameter'
+    })
+  }
+
+  try {
+    const blockNumber = await apiGetBlockNumber(chainId)
+
+    res.status(200).send({
+      success: true,
+      result: blockNumber
     })
   } catch (error) {
     console.error(error)
