@@ -133,7 +133,7 @@ app.get('/account-nonce', async (req, res) => {
 
 app.get('/gas-limit', async (req, res) => {
   const contractAddress = sanitizeHex(req.query.contractAddress)
-  const data = sanitizeHex(req.query.data)
+  const data = sanitizeHex(req.query.data) || '0x'
   const chainId = convertStringToNumber(req.query.chainId)
 
   if (!contractAddress || typeof contractAddress !== 'string') {

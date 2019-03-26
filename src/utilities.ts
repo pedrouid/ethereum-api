@@ -1,6 +1,7 @@
 import utf8 from 'utf8'
 import { IChainData } from './types'
 import { isNumber } from './bignumber'
+import config from './config'
 import supportedChains from './chains'
 
 export const debounceRequest = (
@@ -67,6 +68,19 @@ export function getChainData (chainId: number): IChainData {
 
   if (!chainData) {
     throw new Error('ChainId missing or not supported')
+  }
+
+  if (
+    chainData.rpc_url.includes('infura.io') &&
+    chainData.rpc_url.includes('%API_KEY%') &&
+    config.infura.id
+  ) {
+    const rpcUrl = chainData.rpc_url.replace('%API_KEY%', config.infura.id)
+
+    return {
+      ...chainData,
+      rpc_url: rpcUrl
+    }
   }
 
   return chainData

@@ -26,6 +26,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
+    "dotenv": "^7.0.0",
     "fastify": "^1.14.1",
     "fastify-cors": "^1.0.0",
     "fastify-helmet": "^3.0.0",
@@ -41,6 +42,7 @@
     "@babel/register": "^7.0.0",
     "@types/bignumber.js": "^5.0.0",
     "@types/chai": "^4.1.6",
+    "@types/dotenv": "^6.1.0",
     "@types/fastify-cors": "^0.1.0",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.0",

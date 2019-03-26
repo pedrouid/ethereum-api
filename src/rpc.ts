@@ -27,7 +27,9 @@ export const apiGetGasLimit = async (
   contractAddress: string,
   data: string
 ): Promise<number> => {
-  const rpcUrl = 'https://mainnet.infura.io'
+  const chainId = 1
+
+  const rpcUrl = getChainData(chainId).rpc_url
 
   const response = await axios.post(rpcUrl, {
     jsonrpc: '2.0',
