@@ -11,6 +11,7 @@ Ethereum Blockchain API Aggregator
 - GET `/gas-prices`
 - GET `/block-number?chainId={chainId}`
 - GET `/supported-chains`
+- POST `/custom-request?chainId={chainId}` (body: JSON-RPC request)
 
 ## Examples
 
@@ -334,6 +335,26 @@ GET https://ethereum-api.xyz/supported-chains
             "rpc_url": "https://dai.poa.network"
         }
     ]
+}
+```
+
+### Post Custom JSON-RPC Request
+
+Required Params: chainId
+
+```bash
+POST https://ethereum-api.xyz/custom-request?chainId=1
+
+# Body
+{
+    "method": "eth_chainId",
+    "params": []
+}
+
+# Response
+{
+    "success": true,
+    "result": "0x1"
 }
 ```
 

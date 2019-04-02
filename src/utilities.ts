@@ -1,5 +1,5 @@
 import utf8 from 'utf8'
-import { IChainData } from './types'
+import { IChainData, IPartialRpcRequest, IJsonRpcRequest } from './types'
 import { isNumber } from './bignumber'
 import config from './config'
 import supportedChains from './chains'
@@ -132,4 +132,13 @@ export const hexToUtf8 = (hex: string): string => {
   }
 
   return utf8.decode(str)
+}
+
+export function formatRequest (request: IPartialRpcRequest): IJsonRpcRequest {
+  const formattedRequest: IJsonRpcRequest = {
+    id: payloadId(),
+    jsonrpc: '2.0',
+    ...request
+  }
+  return formattedRequest
 }

@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { getChainData, payloadId } from './utilities'
+import { IPartialRpcRequest } from './types'
+import { getChainData, payloadId, formatRequest } from './utilities'
 import { convertHexToString, convertStringToNumber } from './bignumber'
 
 export const apiGetAccountNonce = async (
@@ -65,4 +66,21 @@ export const apiGetBlockNumber = async (chainId: number): Promise<number> => {
     convertHexToString(response.data.result)
   )
   return blockNumber
+}
+
+export const apiGetCustomRPC = async (
+  chainId: number,
+  customRpc: IPartialRpcRequest
+): Promise<number> => {
+  const rpcUrl = getChainData(chainId).rpc_url
+
+  if (!rpcUrl && typeof rpcUrl !== 'string') {
+    throw new Error('Invalid or missing rpc url')
+  }
+
+  const rpcRequest = formatRequest(customRpc)
+
+  const response = await axios.post(rpcUrl, rpcRequest)
+
+  return response.data.result
 }
