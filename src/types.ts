@@ -128,3 +128,42 @@ export interface IMethod {
   name: string
   args: IMethodArgument[]
 }
+
+export type IPartialRpcResponse = {
+  id: number
+  jsonrpc?: string
+  result?: any
+  error?: {
+    code?: number
+    message: string
+  }
+}
+
+export type IJsonRpcResponseSuccess = {
+  id: number
+  jsonrpc: string
+  result: any
+}
+
+export type IJsonRpcResponseError = {
+  id: number
+  jsonrpc: string
+  error: {
+    code: number
+    message: string
+  }
+}
+
+export type IPartialRpcRequest = {
+  id?: number
+  jsonrpc?: string
+  method: string
+  params: any[]
+}
+
+export type IJsonRpcRequest = {
+  id: number
+  jsonrpc: string
+  method: string
+  params: any[]
+}
