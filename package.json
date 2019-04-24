@@ -21,7 +21,7 @@
     "build": "babel ./src --extensions '.ts' --out-dir ./build",
     "test": "mocha --require ./babel-polyfill.js test/**/*.spec.ts",
     "start": "node ./build",
-    "deploy": "npm run build && now --public"
+    "deploy": "NODE_ENV=production pm2 start ./build --name=server"
   },
   "dependencies": {
     "axios": "^0.18.0",
