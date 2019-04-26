@@ -11,6 +11,6 @@ const api: AxiosInstance = axios.create({
 
 export async function apiGetEthPrices (fiat: string) {
   const url = `/data/price?fsym=ETH&tsyms=${fiat}`
-  const result = await api.get(url)
-  return result
+  const { data } = await api.get(url)
+  return data
 }
