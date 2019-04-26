@@ -9,6 +9,7 @@ Ethereum Blockchain API Aggregator
 - GET `/account-nonce?address={address}&chainId={chainId}`
 - GET `/gas-limit?contractAddress={contractAddress}&data={data}&chainId={chainId}`
 - GET `/gas-prices`
+- GET `/eth-prices`
 - GET `/block-number?chainId={chainId}`
 - GET `/supported-chains`
 - POST `/custom-request?chainId={chainId}` (body: JSON-RPC request)
@@ -224,6 +225,26 @@ GET https://ethereum-api.xyz/gas-prices
             "time": 36,
             "price": 25
         }
+    }
+}
+```
+
+### Get ETH Prices (Ethereum Mainnet only)
+
+Required Params: none
+Optional Params: fiat (default: USD,EUR,GBP)
+
+```bash
+GET https://ethereum-api.xyz/eth-prices?fiat=USD,EUR,GBP,JPY
+
+# Response
+{
+    "success": true,
+    "result": {
+        "USD": 154.75,
+        "EUR": 137.59,
+        "GBP": 118.44,
+        "JPY": 17444.71
     }
 }
 ```
