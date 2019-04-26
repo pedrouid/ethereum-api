@@ -13,6 +13,7 @@ import {
 import { sanitizeHex } from './utilities'
 import { convertStringToNumber } from './bignumber'
 import supportedChains from './chains'
+import { apiGetEthPrices } from './cryptocompare'
 
 const app = fastify({ logger: config.debug })
 
@@ -53,7 +54,7 @@ app.get('/account-assets', async (req, res) => {
     console.error(error)
 
     res.status(500).send({
-      success: true,
+      success: false,
       error: 'Internal Server Error',
       message: error.message
     })
@@ -91,7 +92,7 @@ app.get('/account-transactions', async (req, res) => {
     console.error(error)
 
     res.status(500).send({
-      success: true,
+      success: false,
       error: 'Internal Server Error',
       message: error.message
     })
@@ -129,7 +130,7 @@ app.get('/account-nonce', async (req, res) => {
     console.error(error)
 
     res.status(500).send({
-      success: true,
+      success: false,
       error: 'Internal Server Error',
       message: error.message
     })
@@ -176,7 +177,7 @@ app.get('/gas-limit', async (req, res) => {
     console.error(error)
 
     res.status(500).send({
-      success: true,
+      success: false,
       error: 'Internal Server Error',
       message: error.message
     })
@@ -195,7 +196,32 @@ app.get('/gas-prices', async (req, res) => {
     console.error(error)
 
     res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
+})
+
+app.get('/eth-prices', async (req, res) => {
+  let fiat = req.query.fiat
+
+  if (!fiat || typeof fiat !== 'string') {
+    fiat = 'USD,EUR,GBP'
+  }
+
+  try {
+    const ethPrices = await apiGetEthPrices(fiat)
+
+    res.status(200).send({
       success: true,
+      result: ethPrices
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: false,
       error: 'Internal Server Error',
       message: error.message
     })
@@ -224,7 +250,7 @@ app.get('/block-number', async (req, res) => {
     console.error(error)
 
     res.status(500).send({
-      success: true,
+      success: false,
       error: 'Internal Server Error',
       message: error.message
     })
@@ -253,7 +279,7 @@ app.post('/custom-request', async (req, res) => {
     console.error(error)
 
     res.status(500).send({
-      success: true,
+      success: false,
       error: 'Internal Server Error',
       message: error.message
     })
