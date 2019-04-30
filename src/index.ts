@@ -3,7 +3,7 @@ import helmet from 'fastify-helmet'
 import cors from 'fastify-cors'
 import config from './config'
 import { apiGetAccountAssets, apiGetAccountTransactions } from './blockscout'
-import { apiGetGasPrices } from './gas-price'
+import { apiGetGasPrices, apiGetGasGuzzlers } from './gas-price'
 import {
   apiGetAccountNonce,
   apiGetGasLimit,
@@ -191,6 +191,25 @@ app.get('/gas-prices', async (req, res) => {
     res.status(200).send({
       success: true,
       result: gasPrices
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
+})
+
+app.get('/gas-guzzlers', async (req, res) => {
+  try {
+    const gasGuzzlers = await apiGetGasGuzzlers()
+
+    res.status(200).send({
+      success: true,
+      result: gasGuzzlers
     })
   } catch (error) {
     console.error(error)

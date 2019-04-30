@@ -9,6 +9,7 @@ Ethereum Blockchain API Aggregator
 - GET `/account-nonce?address={address}&chainId={chainId}`
 - GET `/gas-limit?contractAddress={contractAddress}&data={data}&chainId={chainId}`
 - GET `/gas-prices`
+- GET `/gas-guzzlers`
 - GET `/eth-prices`
 - GET `/block-number?chainId={chainId}`
 - GET `/supported-chains`
@@ -226,6 +227,23 @@ GET https://ethereum-api.xyz/gas-prices
             "price": 25
         }
     }
+}
+```
+
+### Get Gas Guzzlers (Ethereum Mainnet only)
+
+Required Params: none
+
+```bash
+GET https://ethereum-api.xyz/gas-guzzlers
+
+# Response
+{
+    "success": true,
+    "result": [
+        {"address":"0xe9428d4a341ac20e9f2e6b95b12c9ad52733fcd9","pct":"13.69","gasused":3548306,"id":""},
+        ...
+    ]
 }
 ```
 

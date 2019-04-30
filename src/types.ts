@@ -119,6 +119,22 @@ export interface IGasPrices {
   fast: IGasPrice
 }
 
+export interface IGasGuzzlerRaw {
+  to_address: string
+  gasused: number
+  pcttot: number
+  ID: string
+}
+
+export type IGasGuzzlerResponse = IGasGuzzlerRaw[]
+
+export interface IGasGuzzler {
+  address: string
+  pct: number
+  gasused: number
+  id: string
+}
+
 export interface IMethodArgument {
   type: string
 }
