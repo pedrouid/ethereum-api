@@ -206,6 +206,8 @@ GET https://ethereum-api.xyz/gas-limit?contractAddress=0x89d24a6b4ccb1b6faa2625f
 
 Required Params: none
 
+**Note:** Returned values of `price` values are in Gwei, `time` is in seconds.
+
 ```bash
 GET https://ethereum-api.xyz/gas-prices
 
