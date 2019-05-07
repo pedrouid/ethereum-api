@@ -9,6 +9,7 @@ import {
 import { multiply, isNumber, convertStringToNumber } from './bignumber'
 import { getChainData } from './utilities'
 import { lookupMethod } from './method-registry'
+import { rpcGetAccountBalance } from './rpc'
 
 const api: AxiosInstance = axios.create({
   baseURL: 'https://blockscout.com/',
@@ -80,7 +81,14 @@ export async function apiGetAccountAssets (
       }
 
   const balanceRes = await apiGetAccountBalance(address, chainId)
-  nativeCurrency.balance = balanceRes.data.result
+
+  let nativeBalance = balanceRes.data.result
+
+  if (!nativeBalance) {
+    nativeBalance = await rpcGetAccountBalance(address, chainId)
+  }
+
+  nativeCurrency.balance = `${nativeBalance}`
 
   const tokenListRes = await apiGetAccountTokenList(address, chainId)
   const tokenList: IAssetData[] = tokenListRes.data.result

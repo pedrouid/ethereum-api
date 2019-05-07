@@ -5,10 +5,10 @@ import config from './config'
 import { apiGetAccountAssets, apiGetAccountTransactions } from './blockscout'
 import { apiGetGasPrices, apiGetGasGuzzlers } from './gas-price'
 import {
-  apiGetAccountNonce,
-  apiGetGasLimit,
-  apiGetBlockNumber,
-  apiGetCustomRPC
+  rpcGetAccountNonce,
+  rpcGetGasLimit,
+  rpcGetBlockNumber,
+  rpcGetCustomRequest
 } from './rpc'
 import { sanitizeHex } from './utilities'
 import { convertStringToNumber } from './bignumber'
@@ -120,7 +120,7 @@ app.get('/account-nonce', async (req, res) => {
   }
 
   try {
-    const nonce = await apiGetAccountNonce(address, chainId)
+    const nonce = await rpcGetAccountNonce(address, chainId)
 
     res.status(200).send({
       success: true,
@@ -167,7 +167,7 @@ app.get('/gas-limit', async (req, res) => {
   }
 
   try {
-    const gasLimit = await apiGetGasLimit(contractAddress, data)
+    const gasLimit = await rpcGetGasLimit(contractAddress, data)
 
     res.status(200).send({
       success: true,
@@ -259,7 +259,7 @@ app.get('/block-number', async (req, res) => {
   }
 
   try {
-    const blockNumber = await apiGetBlockNumber(chainId)
+    const blockNumber = await rpcGetBlockNumber(chainId)
 
     res.status(200).send({
       success: true,
@@ -288,7 +288,7 @@ app.post('/custom-request', async (req, res) => {
   }
 
   try {
-    const response = await apiGetCustomRPC(chainId, req.body)
+    const response = await rpcGetCustomRequest(chainId, req.body)
 
     res.status(200).send({
       success: true,

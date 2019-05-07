@@ -3,7 +3,30 @@ import { IPartialRpcRequest } from './types'
 import { getChainData, payloadId, formatRequest } from './utilities'
 import { convertHexToString, convertStringToNumber } from './bignumber'
 
-export const apiGetAccountNonce = async (
+export const rpcGetAccountBalance = async (
+  address: string,
+  chainId: number
+): Promise<number> => {
+  const rpcUrl = getChainData(chainId).rpc_url
+
+  if (!rpcUrl && typeof rpcUrl !== 'string') {
+    throw new Error('Invalid or missing rpc url')
+  }
+
+  const response = await axios.post(rpcUrl, {
+    jsonrpc: '2.0',
+    id: payloadId(),
+    method: 'eth_getBalance',
+    params: [address, 'latest']
+  })
+
+  const balance = convertStringToNumber(
+    convertHexToString(response.data.result)
+  )
+  return balance
+}
+
+export const rpcGetAccountNonce = async (
   address: string,
   chainId: number
 ): Promise<number> => {
@@ -24,7 +47,7 @@ export const apiGetAccountNonce = async (
   return nonce
 }
 
-export const apiGetGasLimit = async (
+export const rpcGetGasLimit = async (
   contractAddress: string,
   data: string
 ): Promise<number> => {
@@ -49,7 +72,7 @@ export const apiGetGasLimit = async (
   return gasLimit
 }
 
-export const apiGetBlockNumber = async (chainId: number): Promise<number> => {
+export const rpcGetBlockNumber = async (chainId: number): Promise<number> => {
   const rpcUrl = getChainData(chainId).rpc_url
 
   if (!rpcUrl && typeof rpcUrl !== 'string') {
@@ -68,7 +91,7 @@ export const apiGetBlockNumber = async (chainId: number): Promise<number> => {
   return blockNumber
 }
 
-export const apiGetCustomRPC = async (
+export const rpcGetCustomRequest = async (
   chainId: number,
   customRpc: IPartialRpcRequest
 ): Promise<number> => {
