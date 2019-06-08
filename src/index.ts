@@ -2,7 +2,11 @@ import fastify from 'fastify'
 import helmet from 'fastify-helmet'
 import cors from 'fastify-cors'
 import config from './config'
-import { apiGetAccountAssets, apiGetAccountTransactions } from './blockscout'
+import {
+  apiGetAccountAssets,
+  apiGetAccountTransactions,
+  apiGetAccountNativeAsset
+} from './blockscout'
 import { apiGetGasPrices, apiGetGasGuzzlers } from './gas-price'
 import {
   rpcGetAccountNonce,
@@ -22,6 +26,43 @@ app.register(cors)
 
 app.get('/hello', (req, res) => {
   res.status(200).send(`Hello World`)
+})
+
+app.get('/account-balance', async (req, res) => {
+  const address = sanitizeHex(req.query.address)
+  const chainId = convertStringToNumber(req.query.chainId)
+
+  if (!address || typeof address !== 'string') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid address parameter'
+    })
+  }
+
+  if (!chainId || typeof chainId !== 'number') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid chainId parameter'
+    })
+  }
+  try {
+    const nativeAsset = await apiGetAccountNativeAsset(address, chainId)
+
+    res.status(200).send({
+      success: true,
+      result: nativeAsset
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
 })
 
 app.get('/account-assets', async (req, res) => {

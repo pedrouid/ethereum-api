@@ -4,6 +4,7 @@ Ethereum Blockchain API Aggregator
 
 ## API
 
+- GET `/account-balance?address={address}&chainId={chainId}`
 - GET `/account-assets?address={address}&chainId={chainId}`
 - GET `/account-transactions?address={address}&chainId={chainId}`
 - GET `/account-nonce?address={address}&chainId={chainId}`
@@ -16,6 +17,26 @@ Ethereum Blockchain API Aggregator
 - POST `/custom-request?chainId={chainId}` (body: JSON-RPC request)
 
 ## Examples
+
+### Get Account Balance
+
+Required Params: address, chainId
+
+```bash
+GET https://ethereum-api.xyz/account-balance?address=0xfeBD6abD30D8E1AD477957C376efb79d1758B8c1&chainId=1
+
+# Response
+{
+    "success": true,
+    "result": {
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "decimals": "18",
+        "contractAddress": "",
+        "balance": "0"
+    }
+}
+```
 
 ### Get Account Assets
 

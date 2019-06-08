@@ -31,6 +31,42 @@ export async function apiGetAccountBalance (address: string, chainId: number) {
   return result
 }
 
+export async function apiGetAccountNativeAsset (
+  address: string,
+  chainId: number
+) {
+  const chainData = getChainData(chainId)
+
+  const nativeAsset: IAssetData =
+    chainData.short_name.toLowerCase() !== 'xdai'
+      ? {
+        symbol: 'ETH',
+        name: 'Ethereum',
+        decimals: '18',
+        contractAddress: '',
+        balance: ''
+      }
+      : {
+        symbol: 'xDAI',
+        name: 'xDAI',
+        decimals: '18',
+        contractAddress: '',
+        balance: ''
+      }
+
+  const balanceRes = await apiGetAccountBalance(address, chainId)
+
+  let nativeBalance = balanceRes.data.result
+
+  if (!nativeBalance) {
+    nativeBalance = await rpcGetAccountBalance(address, chainId)
+  }
+
+  nativeAsset.balance = `${nativeBalance}`
+
+  return nativeAsset
+}
+
 export async function apiGetAccountTokenList (address: string, chainId: number) {
   const chainData = getChainData(chainId)
   const chain = chainData.chain.toLowerCase()
@@ -61,34 +97,7 @@ export async function apiGetAccountAssets (
   address: string,
   chainId: number
 ): Promise<IAssetData[]> {
-  const chainData = getChainData(chainId)
-
-  const nativeCurrency: IAssetData =
-    chainData.short_name.toLowerCase() !== 'xdai'
-      ? {
-        symbol: 'ETH',
-        name: 'Ethereum',
-        decimals: '18',
-        contractAddress: '',
-        balance: ''
-      }
-      : {
-        symbol: 'xDAI',
-        name: 'xDAI',
-        decimals: '18',
-        contractAddress: '',
-        balance: ''
-      }
-
-  const balanceRes = await apiGetAccountBalance(address, chainId)
-
-  let nativeBalance = balanceRes.data.result
-
-  if (!nativeBalance) {
-    nativeBalance = await rpcGetAccountBalance(address, chainId)
-  }
-
-  nativeCurrency.balance = `${nativeBalance}`
+  const nativeAsset = await apiGetAccountNativeAsset(address, chainId)
 
   const tokenListRes = await apiGetAccountTokenList(address, chainId)
   const tokenList: IAssetData[] = tokenListRes.data.result
@@ -124,7 +133,7 @@ export async function apiGetAccountAssets (
       !!token.name
   )
 
-  const assets: IAssetData[] = [nativeCurrency, ...tokens]
+  const assets: IAssetData[] = [nativeAsset, ...tokens]
 
   return assets
 }
