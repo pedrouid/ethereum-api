@@ -8,6 +8,7 @@ Ethereum Blockchain API Aggregator
 - GET `/account-assets?address={address}&chainId={chainId}`
 - GET `/account-transactions?address={address}&chainId={chainId}`
 - GET `/account-nonce?address={address}&chainId={chainId}`
+- GET `/token-balance?address={address}&contractAddress={contractAddress}&chainId={chainId}`
 - GET `/gas-limit?contractAddress={contractAddress}&data={data}&chainId={chainId}`
 - GET `/gas-prices`
 - GET `/gas-guzzlers`
@@ -206,6 +207,26 @@ GET https://ethereum-api.xyz/account-nonce?address=0xfeBD6abD30D8E1AD477957C376e
 {
     "success": true,
     "result": 4
+}
+```
+
+### Get Token Balance
+
+Required Params: address, chainId, contractAddress
+
+```bash
+GET https://ethereum-api.xyz/account-assets?address=0xfeBD6abD30D8E1AD477957C376efb79d1758B8c1&chainId=1&contractAddress=0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359
+
+# Response
+{
+    "success": true,
+    "result": {
+        "symbol": "DAI",
+        "name": "Dai Stablecoin v1.0",
+        "decimals": "18",
+        "contractAddress": "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+        "balance": ""
+    }
 }
 ```
 

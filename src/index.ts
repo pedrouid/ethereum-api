@@ -5,7 +5,8 @@ import config from './config'
 import {
   apiGetAccountAssets,
   apiGetAccountTransactions,
-  apiGetAccountNativeAsset
+  apiGetAccountNativeAsset,
+  apiGetAccountTokenAsset
 } from './blockscout'
 import { apiGetGasPrices, apiGetGasGuzzlers } from './gas-price'
 import {
@@ -166,6 +167,57 @@ app.get('/account-nonce', async (req, res) => {
     res.status(200).send({
       success: true,
       result: nonce
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
+})
+
+app.get('/token-balance', async (req, res) => {
+  const address = sanitizeHex(req.query.address)
+  const chainId = convertStringToNumber(req.query.chainId)
+  const contractAddress = sanitizeHex(req.query.contractAddress)
+
+  if (!address || typeof address !== 'string') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid address parameter'
+    })
+  }
+
+  if (!chainId || typeof chainId !== 'number') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid chainId parameter'
+    })
+  }
+
+  if (!contractAddress || typeof contractAddress !== 'string') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid contractAddress parameter'
+    })
+  }
+
+  try {
+    const tokenAsset = await apiGetAccountTokenAsset(
+      address,
+      chainId,
+      contractAddress
+    )
+
+    res.status(200).send({
+      success: true,
+      result: tokenAsset
     })
   } catch (error) {
     console.error(error)

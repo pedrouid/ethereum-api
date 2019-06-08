@@ -20,6 +20,30 @@ const api: AxiosInstance = axios.create({
   }
 })
 
+const fetchAndParseTokenBalance = async (
+  token: IAssetData,
+  address: string,
+  chainId: number
+): Promise<IAssetData> => {
+  const tokenBalanceRes = await apiGetAccountTokenBalance(
+    address,
+    chainId,
+    token.contractAddress
+  )
+
+  const tokenBalance = tokenBalanceRes.data.result
+
+  if (
+    tokenBalance &&
+    isNumber(tokenBalance) &&
+    convertStringToNumber(tokenBalance)
+  ) {
+    token.balance = tokenBalance
+  }
+
+  return token
+}
+
 export async function apiGetAccountBalance (address: string, chainId: number) {
   const chainData = getChainData(chainId)
   const chain = chainData.chain.toLowerCase()
@@ -67,6 +91,20 @@ export async function apiGetAccountNativeAsset (
   return nativeAsset
 }
 
+export async function apiGetTokenInfo (
+  contractAddress: string,
+  chainId: number
+) {
+  const chainData = getChainData(chainId)
+  const chain = chainData.chain.toLowerCase()
+  const network = chainData.network.toLowerCase()
+  const module = 'token'
+  const action = 'getToken'
+  const url = `/${chain}/${network}/api?module=${module}&action=${action}&contractaddress=${contractAddress}`
+  const result = await api.get(url)
+  return result
+}
+
 export async function apiGetAccountTokenList (address: string, chainId: number) {
   const chainData = getChainData(chainId)
   const chain = chainData.chain.toLowerCase()
@@ -93,6 +131,32 @@ export async function apiGetAccountTokenBalance (
   return result
 }
 
+export async function apiGetAccountTokenAsset (
+  address: string,
+  chainId: number,
+  contractAddress: string
+) {
+  const tokenInfoRes = await apiGetTokenInfo(contractAddress, chainId)
+
+  const tokenInfo = tokenInfoRes.data.result
+
+  if (tokenInfo) {
+    let token: IAssetData = {
+      symbol: tokenInfo.symbol,
+      name: tokenInfo.name,
+      decimals: tokenInfo.decimals,
+      contractAddress: tokenInfo.contractAddress,
+      balance: ''
+    }
+
+    token = await fetchAndParseTokenBalance(token, address, chainId)
+
+    return token
+  } else {
+    throw new Error('Could not find token information')
+  }
+}
+
 export async function apiGetAccountAssets (
   address: string,
   chainId: number
@@ -103,26 +167,8 @@ export async function apiGetAccountAssets (
   const tokenList: IAssetData[] = tokenListRes.data.result
 
   let tokens: IAssetData[] = await Promise.all(
-    tokenList.map(
-      async (token: IAssetData): Promise<IAssetData> => {
-        const tokenBalanceRes = await apiGetAccountTokenBalance(
-          address,
-          chainId,
-          token.contractAddress
-        )
-
-        const tokenBalance = tokenBalanceRes.data.result
-
-        if (
-          tokenBalance &&
-          isNumber(tokenBalance) &&
-          convertStringToNumber(tokenBalance)
-        ) {
-          token.balance = tokenBalance
-        }
-
-        return token
-      }
+    tokenList.map((token: IAssetData) =>
+      fetchAndParseTokenBalance(token, address, chainId)
     )
   )
   tokens = tokens.filter(
