@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import { IPartialRpcRequest } from './types'
+import { IPartialRpcRequest, IJsonRpcRequest } from './types'
 import { getChainData, payloadId, formatRequest } from './utilities'
 import { convertHexToString, convertStringToNumber } from './bignumber'
 
@@ -110,15 +110,13 @@ export const rpcPostCustomRequest = async (
 
 export const rpcPostRequest = async (
   chainId: number,
-  customRpc: IPartialRpcRequest
+  rpcRequest: IJsonRpcRequest
 ): Promise<AxiosResponse> => {
   const rpcUrl = getChainData(chainId).rpc_url
 
   if (!rpcUrl && typeof rpcUrl !== 'string') {
     throw new Error('Invalid or missing rpc url')
   }
-
-  const rpcRequest = formatRequest(customRpc)
 
   const response = await axios.post(rpcUrl, rpcRequest)
 
