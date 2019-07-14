@@ -13,6 +13,7 @@ Ethereum Blockchain API Aggregator
 - GET `/gas-prices`
 - GET `/gas-guzzlers`
 - GET `/eth-prices`
+- GET `/dai-prices`
 - GET `/block-number?chainId={chainId}`
 - GET `/supported-chains`
 - POST `/custom-request?chainId={chainId}` (body: JSON-RPC request)
@@ -298,6 +299,26 @@ Optional Params: fiat (default: USD,EUR,GBP)
 
 ```bash
 GET https://ethereum-api.xyz/eth-prices?fiat=USD,EUR,GBP,JPY
+
+# Response
+{
+    "success": true,
+    "result": {
+        "USD": 154.75,
+        "EUR": 137.59,
+        "GBP": 118.44,
+        "JPY": 17444.71
+    }
+}
+```
+
+### Get DAI Prices (Ethereum Mainnet only)
+
+Required Params: none
+Optional Params: fiat (default: USD,EUR,GBP)
+
+```bash
+GET https://ethereum-api.xyz/dai-prices?fiat=USD,EUR,GBP,JPY
 
 # Response
 {

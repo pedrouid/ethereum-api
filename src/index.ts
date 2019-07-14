@@ -18,7 +18,7 @@ import {
 import { sanitizeHex } from './utilities'
 import { convertStringToNumber } from './bignumber'
 import supportedChains from './chains'
-import { apiGetEthPrices } from './cryptocompare'
+import { apiGetEthPrices, apiGetDaiPrices } from './cryptocompare'
 
 const app = fastify({ logger: config.debug })
 
@@ -328,6 +328,31 @@ app.get('/eth-prices', async (req, res) => {
     res.status(200).send({
       success: true,
       result: ethPrices
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
+})
+
+app.get('/dai-prices', async (req, res) => {
+  let fiat = req.query.fiat
+
+  if (!fiat || typeof fiat !== 'string') {
+    fiat = 'USD,EUR,GBP'
+  }
+
+  try {
+    const daiPrices = await apiGetDaiPrices(fiat)
+
+    res.status(200).send({
+      success: true,
+      result: daiPrices
     })
   } catch (error) {
     console.error(error)

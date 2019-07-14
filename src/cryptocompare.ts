@@ -14,3 +14,9 @@ export async function apiGetEthPrices (fiat: string) {
   const { data } = await api.get(url)
   return data
 }
+
+export async function apiGetDaiPrices (fiat: string) {
+  const url = `/data/price?fsym=DAI&tsyms=${fiat}`
+  const { data } = await api.get(url)
+  return data
+}
