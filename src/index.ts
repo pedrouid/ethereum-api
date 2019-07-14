@@ -13,7 +13,8 @@ import {
   rpcGetAccountNonce,
   rpcGetGasLimit,
   rpcGetBlockNumber,
-  rpcGetCustomRequest
+  rpcPostCustomRequest,
+  rpcPostRequest
 } from './rpc'
 import { sanitizeHex } from './utilities'
 import { convertStringToNumber } from './bignumber'
@@ -436,11 +437,11 @@ app.post('/custom-request', async (req, res) => {
   }
 
   try {
-    const response = await rpcGetCustomRequest(chainId, req.body)
+    const result = await rpcPostCustomRequest(chainId, req.body)
 
     res.status(200).send({
       success: true,
-      result: response
+      result: result
     })
   } catch (error) {
     console.error(error)
@@ -449,6 +450,34 @@ app.post('/custom-request', async (req, res) => {
       success: false,
       error: 'Internal Server Error',
       message: error.message
+    })
+  }
+})
+
+app.post('/rpc', async (req, res) => {
+  const chainId = convertStringToNumber(req.query.chainId)
+
+  if (!chainId || typeof chainId !== 'number') {
+    res.status(200).send({
+      id: req.body.id,
+      jsonrpc: '2.0',
+      error: {
+        code: -32000,
+        message: 'Missing or invalid chainId parameter'
+      }
+    })
+  }
+  try {
+    const response = await rpcPostRequest(chainId, req.body)
+    res.status(200).send(response.data)
+  } catch (error) {
+    res.status(200).send({
+      id: req.body.id,
+      jsonrpc: '2.0',
+      error: {
+        code: -32603,
+        message: 'Internal error'
+      }
     })
   }
 })

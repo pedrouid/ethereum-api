@@ -18,10 +18,11 @@ Ethereum Blockchain API Aggregator
 - GET `/block-number?chainId={chainId}`
 - GET `/supported-chains`
 - POST `/custom-request?chainId={chainId}` (body: JSON-RPC request)
+- POST `/rpc?chainId={chainId}` (body: JSON-RPC request)
 
 ## Examples
 
-### Get Account Balance
+### GET Account Balance
 
 Required Params: address, chainId
 
@@ -41,7 +42,7 @@ GET https://ethereum-api.xyz/account-balance?address=0xfeBD6abD30D8E1AD477957C37
 }
 ```
 
-### Get Account Assets
+### GET Account Assets
 
 Required Params: address, chainId
 
@@ -70,7 +71,7 @@ GET https://ethereum-api.xyz/account-assets?address=0xfeBD6abD30D8E1AD477957C376
 }
 ```
 
-### Get Account Transactions
+### GET Account Transactions
 
 Required Params: address, chainId
 
@@ -198,7 +199,7 @@ GET https://ethereum-api.xyz/account-transactions?address=0xfeBD6abD30D8E1AD4779
 }
 ```
 
-### Get Account Nonce
+### GET Account Nonce
 
 Required Params: address, chainId
 
@@ -212,7 +213,7 @@ GET https://ethereum-api.xyz/account-nonce?address=0xfeBD6abD30D8E1AD477957C376e
 }
 ```
 
-### Get Account Collectibles (Ethereum Mainnet only)
+### GET Account Collectibles (Ethereum Mainnet only)
 
 Required Params: address
 
@@ -223,7 +224,7 @@ GET https://ethereum-api.xyz/account-collectibles?address=0xfeBD6abD30D8E1AD4779
 You can find a reference on OpenSea API at https://docs.opensea.io/reference#getting-assets
 ```
 
-### Get Token Balance
+### GET Token Balance
 
 Required Params: address, chainId, contractAddress
 
@@ -243,7 +244,7 @@ GET https://ethereum-api.xyz/account-assets?address=0xfeBD6abD30D8E1AD477957C376
 }
 ```
 
-### Get Gas Limit
+### GET Gas Limit
 
 Required Params: contractAddress, data, chainId
 
@@ -257,7 +258,7 @@ GET https://ethereum-api.xyz/gas-limit?contractAddress=0x89d24a6b4ccb1b6faa2625f
 }
 ```
 
-### Get Gas Prices (Ethereum Mainnet only)
+### GET Gas Prices (Ethereum Mainnet only)
 
 Required Params: none
 
@@ -287,7 +288,7 @@ GET https://ethereum-api.xyz/gas-prices
 }
 ```
 
-### Get Gas Guzzlers (Ethereum Mainnet only)
+### GET Gas Guzzlers (Ethereum Mainnet only)
 
 Required Params: none
 
@@ -304,7 +305,7 @@ GET https://ethereum-api.xyz/gas-guzzlers
 }
 ```
 
-### Get ETH Prices (Ethereum Mainnet only)
+### GET ETH Prices (Ethereum Mainnet only)
 
 Required Params: none
 Optional Params: fiat (default: USD,EUR,GBP)
@@ -324,7 +325,7 @@ GET https://ethereum-api.xyz/eth-prices?fiat=USD,EUR,GBP,JPY
 }
 ```
 
-### Get DAI Prices (Ethereum Mainnet only)
+### GET DAI Prices (Ethereum Mainnet only)
 
 Required Params: none
 Optional Params: fiat (default: USD,EUR,GBP)
@@ -344,7 +345,7 @@ GET https://ethereum-api.xyz/dai-prices?fiat=USD,EUR,GBP,JPY
 }
 ```
 
-### Get Block Number
+### GET Block Number
 
 Required Params: chainId
 
@@ -358,7 +359,7 @@ GET https://ethereum-api.xyz/block-number?chainId=1
 }
 ```
 
-### Get Supported Chains
+### GET Supported Chains
 
 Required Params: none
 
@@ -549,7 +550,7 @@ GET https://ethereum-api.xyz/supported-chains
 }
 ```
 
-### Post Custom JSON-RPC Request
+### POST Custom JSON-RPC Request
 
 Required Params: chainId
 
@@ -566,6 +567,29 @@ POST https://ethereum-api.xyz/custom-request?chainId=1
 {
     "success": true,
     "result": "0x1"
+}
+```
+
+### POST Full JSON-RPC Request
+
+Required Params: chainId
+
+```bash
+POST https://ethereum-api.xyz/rpc?chainId=1
+
+# Body
+{
+	"id": 1337,
+	"jsonrpc": "2.0",
+	"method": "eth_blockNumber",
+	"params": []
+}
+
+# Response
+{
+    "id": 1337,
+    "jsonrpc": "2.0",
+    "result": "0x7c6359"
 }
 ```
 
