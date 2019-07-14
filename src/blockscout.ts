@@ -55,28 +55,13 @@ export async function apiGetAccountBalance (address: string, chainId: number) {
   return result
 }
 
-export async function apiGetAccountNativeAsset (
+export async function apiGetAccountNativeCurrency (
   address: string,
   chainId: number
 ) {
   const chainData = getChainData(chainId)
 
-  const nativeAsset: IAssetData =
-    chainData.short_name.toLowerCase() !== 'xdai'
-      ? {
-        symbol: 'ETH',
-        name: 'Ethereum',
-        decimals: '18',
-        contractAddress: '',
-        balance: ''
-      }
-      : {
-        symbol: 'xDAI',
-        name: 'xDAI',
-        decimals: '18',
-        contractAddress: '',
-        balance: ''
-      }
+  const nativeCurrency = chainData.native_currency
 
   const balanceRes = await apiGetAccountBalance(address, chainId)
 
@@ -86,9 +71,9 @@ export async function apiGetAccountNativeAsset (
     nativeBalance = await rpcGetAccountBalance(address, chainId)
   }
 
-  nativeAsset.balance = `${nativeBalance}`
+  nativeCurrency.balance = `${nativeBalance}`
 
-  return nativeAsset
+  return nativeCurrency
 }
 
 export async function apiGetTokenInfo (
@@ -161,7 +146,7 @@ export async function apiGetAccountAssets (
   address: string,
   chainId: number
 ): Promise<IAssetData[]> {
-  const nativeAsset = await apiGetAccountNativeAsset(address, chainId)
+  const nativeCurrency = await apiGetAccountNativeCurrency(address, chainId)
 
   const tokenListRes = await apiGetAccountTokenList(address, chainId)
   const tokenList: IAssetData[] = tokenListRes.data.result
@@ -179,7 +164,7 @@ export async function apiGetAccountAssets (
       !!token.name
   )
 
-  const assets: IAssetData[] = [nativeAsset, ...tokens]
+  const assets: IAssetData[] = [nativeCurrency, ...tokens]
 
   return assets
 }

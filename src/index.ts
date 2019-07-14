@@ -5,7 +5,7 @@ import config from './config'
 import {
   apiGetAccountAssets,
   apiGetAccountTransactions,
-  apiGetAccountNativeAsset,
+  apiGetAccountNativeCurrency,
   apiGetAccountTokenAsset
 } from './blockscout'
 import { apiGetGasPrices, apiGetGasGuzzlers } from './gas-price'
@@ -49,11 +49,11 @@ app.get('/account-balance', async (req, res) => {
     })
   }
   try {
-    const nativeAsset = await apiGetAccountNativeAsset(address, chainId)
+    const nativeCurrency = await apiGetAccountNativeCurrency(address, chainId)
 
     res.status(200).send({
       success: true,
-      result: nativeAsset
+      result: nativeCurrency
     })
   } catch (error) {
     console.error(error)

@@ -11,6 +11,6 @@ export default {
   port: process.env.PORT || env === 'production' ? 5000 : 5001,
   infura: {
     id: process.env.INFURA_PROJECT_ID,
-    secret: process.env.INFURA_PROJECT_ID
+    secret: process.env.INFURA_PROJECT_SECRET
   }
 }

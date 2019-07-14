@@ -70,19 +70,14 @@ export function getChainData (chainId: number): IChainData {
     throw new Error('ChainId missing or not supported')
   }
 
-  const API_KEY = config.infura.id
+  const INFURA_ID = config.infura.id
 
   if (
+    INFURA_ID &&
     chainData.rpc_url.includes('infura.io') &&
-    chainData.rpc_url.includes('%API_KEY%') &&
-    API_KEY
+    chainData.rpc_url.includes('INFURA_ID')
   ) {
-    const rpcUrl = chainData.rpc_url.replace('%API_KEY%', API_KEY)
-
-    return {
-      ...chainData,
-      rpc_url: rpcUrl
-    }
+    chainData.rpc_url = chainData.rpc_url.replace('INFURA_ID', INFURA_ID)
   }
 
   return chainData

@@ -343,7 +343,14 @@ GET https://ethereum-api.xyz/supported-chains
             "network": "mainnet",
             "chain_id": 1,
             "network_id": 1,
-            "rpc_url": "https://mainnet.infura.io/"
+            "rpc_url": "https://mainnet.infura.io/v3/INFURA_ID",
+            "native_currency": {
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": ""
+            }
         },
         {
             "name": "Ethereum Ropsten",
@@ -352,7 +359,14 @@ GET https://ethereum-api.xyz/supported-chains
             "network": "ropsten",
             "chain_id": 3,
             "network_id": 3,
-            "rpc_url": "https://ropsten.infura.io/"
+            "rpc_url": "https://ropsten.infura.io/v3/206405f9762348f99d0d5c27004b2213",
+            "native_currency": {
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": "292431829496767250000"
+            }
         },
         {
             "name": "Ethereum Rinkeby",
@@ -361,7 +375,14 @@ GET https://ethereum-api.xyz/supported-chains
             "network": "rinkeby",
             "chain_id": 4,
             "network_id": 4,
-            "rpc_url": "https://rinkeby.infura.io/"
+            "rpc_url": "https://rinkeby.infura.io/v3/INFURA_ID",
+            "native_currency": {
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": ""
+            }
         },
         {
             "name": "Ethereum Görli",
@@ -370,7 +391,30 @@ GET https://ethereum-api.xyz/supported-chains
             "network": "goerli",
             "chain_id": 5,
             "network_id": 5,
-            "rpc_url": "https://rpc.goerli.mudit.blog/"
+            "rpc_url": "https://goerli.infura.io/v3/INFURA_ID",
+            "native_currency": {
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": ""
+            }
+        },
+        {
+            "name": "RSK Mainnet",
+            "short_name": "rsk",
+            "chain": "RSK",
+            "network": "mainnet",
+            "chain_id": 30,
+            "network_id": 30,
+            "rpc_url": "https://public-node.rsk.co",
+            "native_currency": {
+                "symbol": "RSK",
+                "name": "RSK",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": "0"
+            }
         },
         {
             "name": "Ethereum Kovan",
@@ -379,7 +423,14 @@ GET https://ethereum-api.xyz/supported-chains
             "network": "kovan",
             "chain_id": 42,
             "network_id": 42,
-            "rpc_url": "https://kovan.infura.io/"
+            "rpc_url": "https://kovan.infura.io/v3/INFURA_ID",
+            "native_currency": {
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": ""
+            }
         },
         {
             "name": "Ethereum Classic Mainnet",
@@ -388,7 +439,14 @@ GET https://ethereum-api.xyz/supported-chains
             "network": "mainnet",
             "chain_id": 61,
             "network_id": 1,
-            "rpc_url": "https://ethereumclassic.network"
+            "rpc_url": "https://ethereumclassic.network",
+            "native_currency": {
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": ""
+            }
         },
         {
             "name": "POA Network Sokol",
@@ -396,8 +454,15 @@ GET https://ethereum-api.xyz/supported-chains
             "chain": "POA",
             "network": "sokol",
             "chain_id": 77,
-            "network_id": 1,
-            "rpc_url": "https://sokol.poa.network"
+            "network_id": 77,
+            "rpc_url": "https://sokol.poa.network",
+            "native_currency": {
+                "symbol": "POA",
+                "name": "POA",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": ""
+            }
         },
         {
             "name": "POA Network Core",
@@ -405,17 +470,47 @@ GET https://ethereum-api.xyz/supported-chains
             "chain": "POA",
             "network": "core",
             "chain_id": 99,
-            "network_id": 2,
-            "rpc_url": "https://core.poa.network"
+            "network_id": 99,
+            "rpc_url": "https://core.poa.network",
+            "native_currency": {
+                "symbol": "POA",
+                "name": "POA",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": "0"
+            }
         },
         {
             "name": "xDAI Chain",
             "short_name": "xdai",
-            "chain": "xDAI",
-            "network": "mainnet",
+            "chain": "POA",
+            "network": "dai",
             "chain_id": 100,
+            "network_id": 100,
+            "rpc_url": "https://dai.poa.network",
+            "native_currency": {
+                "symbol": "xDAI",
+                "name": "xDAI",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": "0"
+            }
+        },
+        {
+            "name": "Callisto Mainnet",
+            "short_name": "clo",
+            "chain": "callisto",
+            "network": "mainnet",
+            "chain_id": 820,
             "network_id": 1,
-            "rpc_url": "https://dai.poa.network"
+            "rpc_url": "https://clo-geth.0xinfra.com/",
+            "native_currency": {
+                "symbol": "CLO",
+                "name": "CLO",
+                "decimals": "18",
+                "contractAddress": "",
+                "balance": "0"
+            }
         }
     ]
 }
