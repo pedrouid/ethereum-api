@@ -8,6 +8,7 @@ Ethereum Blockchain API Aggregator
 - GET `/account-assets?address={address}&chainId={chainId}`
 - GET `/account-transactions?address={address}&chainId={chainId}`
 - GET `/account-nonce?address={address}&chainId={chainId}`
+- GET `/account-collectibles?address={address}`
 - GET `/token-balance?address={address}&contractAddress={contractAddress}&chainId={chainId}`
 - GET `/gas-limit?contractAddress={contractAddress}&data={data}&chainId={chainId}`
 - GET `/gas-prices`
@@ -209,6 +210,17 @@ GET https://ethereum-api.xyz/account-nonce?address=0xfeBD6abD30D8E1AD477957C376e
     "success": true,
     "result": 4
 }
+```
+
+### Get Account Collectibles (Ethereum Mainnet only)
+
+Required Params: address
+
+```bash
+GET https://ethereum-api.xyz/account-collectibles?address=0xfeBD6abD30D8E1AD477957C376efb79d1758B8c1
+
+# Response
+You can find a reference on OpenSea API at https://docs.opensea.io/reference#getting-assets
 ```
 
 ### Get Token Balance

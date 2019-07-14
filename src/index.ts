@@ -18,6 +18,7 @@ import {
 import { sanitizeHex } from './utilities'
 import { convertStringToNumber } from './bignumber'
 import supportedChains from './chains'
+import { apiGetAccountCollectibles } from './opensea'
 import { apiGetEthPrices, apiGetDaiPrices } from './cryptocompare'
 
 const app = fastify({ logger: config.debug })
@@ -167,6 +168,35 @@ app.get('/account-nonce', async (req, res) => {
     res.status(200).send({
       success: true,
       result: nonce
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: error.message
+    })
+  }
+})
+
+app.get('/account-collectibles', async (req, res) => {
+  const address = sanitizeHex(req.query.address)
+
+  if (!address || typeof address !== 'string') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid address parameter'
+    })
+  }
+
+  try {
+    const collectibles = await apiGetAccountCollectibles(address)
+
+    res.status(200).send({
+      success: true,
+      result: collectibles
     })
   } catch (error) {
     console.error(error)
