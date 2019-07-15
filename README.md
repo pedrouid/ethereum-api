@@ -1,6 +1,6 @@
 # ethereum-api
 
-Ethereum Blockchain API Aggregator
+A simple Ethereum API proxy for multi-EVM dapps
 
 ## API
 
