@@ -1,6 +1,7 @@
 import fastify from 'fastify'
 import helmet from 'fastify-helmet'
 import cors from 'fastify-cors'
+import _static from 'fastify-static'
 import config from './config'
 import {
   apiGetAccountAssets,
@@ -26,6 +27,11 @@ const app = fastify({ logger: config.debug })
 
 app.register(helmet)
 app.register(cors)
+app.register(_static, { root: config.path.staticDir, wildcard: false })
+
+app.get('/', function (req, res: any) {
+  res.sendFile('index.html')
+})
 
 app.get('/hello', (req, res) => {
   res.status(200).send(`Hello World`)

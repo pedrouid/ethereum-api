@@ -17,9 +17,16 @@
   "homepage": "https://ethereum-api.xyz",
   "license": "MIT",
   "scripts": {
-    "dev": "babel-node --extensions '.ts' src/index.ts",
-    "build": "babel ./src --extensions '.ts' --out-dir ./build",
-    "test": "mocha --require ./babel-polyfill.js test/**/*.spec.ts",
+    "bootstrap": "npm install && cd client && npm install",
+    "dev:client": "cd client && npm run start",
+    "dev:server": "babel-node --extensions '.ts' src/index.ts",
+    "dev": "NODE_ENV=development concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build:client": "cd client && npm run build",
+    "build:server": "babel ./src --extensions '.ts' --out-dir ./build",
+    "build": "NODE_ENV=development concurrently \"npm run build:server\" \"npm run build:client\"",
+    "test:client": "cd client && npm run test",
+    "test:server": "mocha --require ./babel-polyfill.js test/**/*.spec.ts",
+    "test": "NODE_ENV=development concurrently \"npm run test:server\" \"npm run test:client\"",
     "start": "node ./build",
     "deploy": "NODE_ENV=production pm2 start ./build --name=server"
   },
@@ -30,6 +37,7 @@
     "fastify": "^2.4.1",
     "fastify-cors": "^2.1.3",
     "fastify-helmet": "^3.0.0",
+    "fastify-static": "^2.5.0",
     "utf8": "^3.0.0"
   },
   "devDependencies": {
@@ -47,6 +55,7 @@
     "@types/node": "^12.0.7",
     "@types/utf8": "^2.1.6",
     "chai": "^4.2.0",
+    "concurrently": "^4.1.1",
     "eslint": "^5.8.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",

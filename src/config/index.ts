@@ -1,9 +1,13 @@
+import path from 'path'
 import dotenv from 'dotenv'
 
 dotenv.config()
 
 const env = process.env.NODE_ENV || 'development'
 const debug = env !== 'production'
+
+const rootDir = path.join(__dirname, '../../')
+const staticDir = path.join(rootDir, 'client/build')
 
 export default {
   env: env,
@@ -12,5 +16,9 @@ export default {
   infura: {
     id: process.env.INFURA_PROJECT_ID,
     secret: process.env.INFURA_PROJECT_SECRET
+  },
+  path: {
+    rootDir,
+    staticDir
   }
 }
