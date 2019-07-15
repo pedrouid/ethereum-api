@@ -61,7 +61,10 @@ export const sanitizeHex = (hex: string): string => {
   return '0x' + hex
 }
 
-export function getChainData (chainId: number): IChainData {
+export function getChainData (
+  chainId: number,
+  noInfuraKeys?: boolean
+): IChainData {
   const chainData = supportedChains.filter(
     (chain: any) => chain.chain_id === chainId
   )[0]
@@ -70,14 +73,16 @@ export function getChainData (chainId: number): IChainData {
     throw new Error('ChainId missing or not supported')
   }
 
-  const INFURA_ID = config.infura.id
+  if (!noInfuraKeys) {
+    const INFURA_ID = config.infura.id
 
-  if (
-    INFURA_ID &&
-    chainData.rpc_url.includes('infura.io') &&
-    chainData.rpc_url.includes('INFURA_ID')
-  ) {
-    chainData.rpc_url = chainData.rpc_url.replace('INFURA_ID', INFURA_ID)
+    if (
+      INFURA_ID &&
+      chainData.rpc_url.includes('infura.io') &&
+      chainData.rpc_url.includes('INFURA_ID')
+    ) {
+      chainData.rpc_url = chainData.rpc_url.replace('INFURA_ID', INFURA_ID)
+    }
   }
 
   return chainData

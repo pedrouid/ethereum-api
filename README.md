@@ -16,6 +16,7 @@ Ethereum Blockchain API Aggregator
 - GET `/eth-prices`
 - GET `/dai-prices`
 - GET `/block-number?chainId={chainId}`
+- GET `/chain-data?chainId={chainId}`
 - GET `/supported-chains`
 - POST `/custom-request?chainId={chainId}` (body: JSON-RPC request)
 - POST `/rpc?chainId={chainId}` (body: JSON-RPC request)
@@ -356,6 +357,35 @@ GET https://ethereum-api.xyz/block-number?chainId=1
 {
     "success": true,
     "result": 7412670
+}
+```
+
+### GET Chain Data
+
+Required Params: chainId
+
+```bash
+GET https://ethereum-api.xyz/chain-data?chainId=1
+
+# Response
+{
+    "success": true,
+    "result": {
+        "name": "Ethereum Mainnet",
+        "short_name": "eth",
+        "chain": "ETH",
+        "network": "mainnet",
+        "chain_id": 1,
+        "network_id": 1,
+        "rpc_url": "https://mainnet.infura.io/v3/INFURA_ID",
+        "native_currency": {
+            "symbol": "ETH",
+            "name": "Ethereum",
+            "decimals": "18",
+            "contractAddress": "",
+            "balance": ""
+        }
+    }
 }
 ```
 

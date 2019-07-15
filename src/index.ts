@@ -16,7 +16,7 @@ import {
   rpcPostCustomRequest,
   rpcPostRequest
 } from './rpc'
-import { sanitizeHex } from './utilities'
+import { sanitizeHex, getChainData } from './utilities'
 import { convertStringToNumber } from './bignumber'
 import supportedChains from './chains'
 import { apiGetAccountCollectibles } from './opensea'
@@ -467,6 +467,7 @@ app.post('/rpc', async (req, res) => {
       }
     })
   }
+
   try {
     const response = await rpcPostRequest(chainId, req.body)
     res.status(200).send(response.data)
@@ -478,6 +479,35 @@ app.post('/rpc', async (req, res) => {
         code: -32603,
         message: 'Internal error'
       }
+    })
+  }
+})
+
+app.get('/chain-data', async (req, res) => {
+  const chainId = convertStringToNumber(req.query.chainId)
+
+  if (!chainId || typeof chainId !== 'number') {
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'Missing or invalid chainId parameter'
+    })
+  }
+
+  try {
+    const chainData = getChainData(chainId, true)
+
+    res.status(200).send({
+      success: true,
+      result: chainData
+    })
+  } catch (error) {
+    console.error(error)
+
+    res.status(500).send({
+      success: false,
+      error: 'Internal Server Error',
+      message: error.message
     })
   }
 })
