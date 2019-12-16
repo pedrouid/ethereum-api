@@ -66,9 +66,6 @@ export async function apiGetAccountNativeCurrency (
   const nativeCurrency = chainData.native_currency
 
   const balanceRes = await apiGetAccountBalance(address, chainId)
-  console.log('\n\n')
-  console.log(balanceRes.data)
-  console.log('\n\n')
 
   let nativeBalance = isSuccessful(balanceRes) ? balanceRes.data.result : 0
 
@@ -154,9 +151,6 @@ export async function apiGetAccountAssets (
   const nativeCurrency = await apiGetAccountNativeCurrency(address, chainId)
 
   const tokenListRes = await apiGetAccountTokenList(address, chainId)
-  console.log('\n\n')
-  console.log(tokenListRes.data)
-  console.log('\n\n')
   const tokenList: IAssetData[] = isSuccessful(tokenListRes)
     ? tokenListRes.data.result
     : []
