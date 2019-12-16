@@ -142,3 +142,7 @@ export function formatRequest (request: IPartialRpcRequest): IJsonRpcRequest {
   }
   return formattedRequest
 }
+
+export function isSuccessful (response: any) {
+  return response.data && response.data.status !== '0'
+}

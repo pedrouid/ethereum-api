@@ -7,7 +7,7 @@ import {
   ITxOperation
 } from './types'
 import { multiply, isNumber, convertStringToNumber } from './bignumber'
-import { getChainData } from './utilities'
+import { getChainData, isSuccessful } from './utilities'
 import { lookupMethod } from './method-registry'
 import { rpcGetAccountBalance } from './rpc'
 
@@ -31,7 +31,9 @@ const fetchAndParseTokenBalance = async (
     token.contractAddress
   )
 
-  const tokenBalance = tokenBalanceRes.data.result
+  const tokenBalance = isSuccessful(tokenBalanceRes)
+    ? tokenBalanceRes.data.result
+    : []
 
   if (
     tokenBalance &&
@@ -64,8 +66,11 @@ export async function apiGetAccountNativeCurrency (
   const nativeCurrency = chainData.native_currency
 
   const balanceRes = await apiGetAccountBalance(address, chainId)
+  console.log('\n\n')
+  console.log(balanceRes.data)
+  console.log('\n\n')
 
-  let nativeBalance = balanceRes.data.result
+  let nativeBalance = isSuccessful(balanceRes) ? balanceRes.data.result : 0
 
   if (!nativeBalance) {
     nativeBalance = await rpcGetAccountBalance(address, chainId)
@@ -123,7 +128,7 @@ export async function apiGetAccountTokenAsset (
 ) {
   const tokenInfoRes = await apiGetTokenInfo(contractAddress, chainId)
 
-  const tokenInfo = tokenInfoRes.data.result
+  const tokenInfo = isSuccessful(tokenInfoRes) ? tokenInfoRes.data.result : null
 
   if (tokenInfo) {
     let token: IAssetData = {
@@ -149,7 +154,12 @@ export async function apiGetAccountAssets (
   const nativeCurrency = await apiGetAccountNativeCurrency(address, chainId)
 
   const tokenListRes = await apiGetAccountTokenList(address, chainId)
-  const tokenList: IAssetData[] = tokenListRes.data.result
+  console.log('\n\n')
+  console.log(tokenListRes.data)
+  console.log('\n\n')
+  const tokenList: IAssetData[] = isSuccessful(tokenListRes)
+    ? tokenListRes.data.result
+    : []
 
   let tokens: IAssetData[] = await Promise.all(
     tokenList.map((token: IAssetData) =>
@@ -196,7 +206,9 @@ export async function apiGetAccountTransactions (
   chainId: number
 ): Promise<IParsedTx[]> {
   const txListRes = await apiGetAccountTxList(address, chainId)
-  const txList: IBlockScoutTx[] = txListRes.data.result
+  const txList: IBlockScoutTx[] = isSuccessful(txListRes)
+    ? txListRes.data.result
+    : []
 
   let transactions: IParsedTx[] = txList.map(
     (tx: IBlockScoutTx): IParsedTx => {
@@ -227,7 +239,9 @@ export async function apiGetAccountTransactions (
   )
 
   const tokenTxnsRes = await apiGetAccountTokenTx(address, chainId)
-  const tokenTxns: IBlockScoutTokenTx[] = tokenTxnsRes.data.result
+  const tokenTxns: IBlockScoutTokenTx[] = isSuccessful(tokenTxnsRes)
+    ? tokenTxnsRes.data.result
+    : []
 
   await Promise.all(
     tokenTxns.map(async (tokenTx: IBlockScoutTokenTx) => {
