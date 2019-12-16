@@ -1,3 +1,6 @@
+import fastify from 'fastify'
+import { IncomingMessage, ServerResponse } from 'http'
+
 export interface IAssetData {
   symbol: string
   name: string
@@ -184,3 +187,13 @@ export type IJsonRpcRequest = {
   method: string
   params: any[]
 }
+
+export type FastifyRequest = fastify.FastifyRequest<
+  IncomingMessage,
+  fastify.DefaultQuery,
+  fastify.DefaultParams,
+  fastify.DefaultHeaders,
+  any
+>
+
+export type FastifyResponse = fastify.FastifyReply<ServerResponse>

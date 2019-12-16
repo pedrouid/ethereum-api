@@ -16,40 +16,36 @@ import {
   rpcPostCustomRequest,
   rpcPostRequest
 } from './rpc'
-import { sanitizeHex, getChainData } from './utilities'
+import { getChainData } from './utilities'
 import { convertStringToNumber } from './bignumber'
 import supportedChains from './chains'
 import { apiGetAccountCollectibles } from './opensea'
 import { apiGetEthPrices, apiGetDaiPrices } from './cryptocompare'
+import {
+  verifyAddress,
+  verifyChainId,
+  verifyContractAddress,
+  verifyData
+} from './verifiers'
+import { sendErrorMessage } from './errors'
 
 const app = fastify({ logger: config.debug })
 
 app.register(helmet)
 app.register(cors)
 
+app.get('/health', (_, res) => {
+  res.status(204).send()
+})
+
 app.get('/hello', (req, res) => {
   res.status(200).send(`Hello World`)
 })
 
 app.get('/account-balance', async (req, res) => {
-  const address = sanitizeHex(req.query.address)
-  const chainId = convertStringToNumber(req.query.chainId)
+  const address = verifyAddress(req, res)
+  const chainId = verifyChainId(req, res)
 
-  if (!address || typeof address !== 'string') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid address parameter'
-    })
-  }
-
-  if (!chainId || typeof chainId !== 'number') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid chainId parameter'
-    })
-  }
   try {
     const nativeCurrency = await apiGetAccountNativeCurrency(address, chainId)
 
@@ -59,34 +55,14 @@ app.get('/account-balance', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
 app.get('/account-assets', async (req, res) => {
-  const address = sanitizeHex(req.query.address)
-  const chainId = convertStringToNumber(req.query.chainId)
+  const address = verifyAddress(req, res)
+  const chainId = verifyChainId(req, res)
 
-  if (!address || typeof address !== 'string') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid address parameter'
-    })
-  }
-
-  if (!chainId || typeof chainId !== 'number') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid chainId parameter'
-    })
-  }
   try {
     const assets = await apiGetAccountAssets(address, chainId)
 
@@ -96,34 +72,13 @@ app.get('/account-assets', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
 app.get('/account-transactions', async (req, res) => {
-  const address = sanitizeHex(req.query.address)
-  const chainId = convertStringToNumber(req.query.chainId)
-
-  if (!address || typeof address !== 'string') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid address parameter'
-    })
-  }
-
-  if (!chainId || typeof chainId !== 'number') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid chainId parameter'
-    })
-  }
+  const address = verifyAddress(req, res)
+  const chainId = verifyChainId(req, res)
 
   try {
     const transactions = await apiGetAccountTransactions(address, chainId)
@@ -134,34 +89,13 @@ app.get('/account-transactions', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
 app.get('/account-nonce', async (req, res) => {
-  const address = sanitizeHex(req.query.address)
-  const chainId = convertStringToNumber(req.query.chainId)
-
-  if (!address || typeof address !== 'string') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid address parameter'
-    })
-  }
-
-  if (!chainId || typeof chainId !== 'number') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid chainId parameter'
-    })
-  }
+  const address = verifyAddress(req, res)
+  const chainId = verifyChainId(req, res)
 
   try {
     const nonce = await rpcGetAccountNonce(address, chainId)
@@ -172,25 +106,12 @@ app.get('/account-nonce', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
 app.get('/account-collectibles', async (req, res) => {
-  const address = sanitizeHex(req.query.address)
-
-  if (!address || typeof address !== 'string') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid address parameter'
-    })
-  }
+  const address = verifyAddress(req, res)
 
   try {
     const collectibles = await apiGetAccountCollectibles(address)
@@ -201,43 +122,14 @@ app.get('/account-collectibles', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
 app.get('/token-balance', async (req, res) => {
-  const address = sanitizeHex(req.query.address)
-  const chainId = convertStringToNumber(req.query.chainId)
-  const contractAddress = sanitizeHex(req.query.contractAddress)
-
-  if (!address || typeof address !== 'string') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid address parameter'
-    })
-  }
-
-  if (!chainId || typeof chainId !== 'number') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid chainId parameter'
-    })
-  }
-
-  if (!contractAddress || typeof contractAddress !== 'string') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid contractAddress parameter'
-    })
-  }
+  const contractAddress = verifyContractAddress(req, res)
+  const address = verifyAddress(req, res)
+  const chainId = verifyChainId(req, res)
 
   try {
     const tokenAsset = await apiGetAccountTokenAsset(
@@ -252,43 +144,14 @@ app.get('/token-balance', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
 app.get('/gas-limit', async (req, res) => {
-  const contractAddress = sanitizeHex(req.query.contractAddress)
-  const data = sanitizeHex(req.query.data) || '0x'
-  const chainId = convertStringToNumber(req.query.chainId)
-
-  if (!contractAddress || typeof contractAddress !== 'string') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid contractAddress parameter'
-    })
-  }
-
-  if (!data || typeof data !== 'string') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid data parameter'
-    })
-  }
-
-  if (!chainId || typeof chainId !== 'number') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid chainId parameter'
-    })
-  }
+  const contractAddress = verifyContractAddress(req, res)
+  const data = verifyData(req, res)
+  const chainId = verifyChainId(req, res)
 
   try {
     const gasLimit = await rpcGetGasLimit(contractAddress, data)
@@ -299,12 +162,7 @@ app.get('/gas-limit', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
@@ -318,12 +176,7 @@ app.get('/gas-prices', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
@@ -337,12 +190,7 @@ app.get('/gas-guzzlers', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
@@ -362,12 +210,7 @@ app.get('/eth-prices', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
@@ -387,25 +230,12 @@ app.get('/dai-prices', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
 app.get('/block-number', async (req, res) => {
-  const chainId = convertStringToNumber(req.query.chainId)
-
-  if (!chainId || typeof chainId !== 'number') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid chainId parameter'
-    })
-  }
+  const chainId = verifyChainId(req, res)
 
   try {
     const blockNumber = await rpcGetBlockNumber(chainId)
@@ -416,25 +246,12 @@ app.get('/block-number', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
 app.post('/custom-request', async (req, res) => {
-  const chainId = convertStringToNumber(req.query.chainId)
-
-  if (!chainId || typeof chainId !== 'number') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid chainId parameter'
-    })
-  }
+  const chainId = verifyChainId(req, res)
 
   try {
     const result = await rpcPostCustomRequest(chainId, req.body)
@@ -445,18 +262,14 @@ app.post('/custom-request', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
 app.post('/rpc', async (req, res) => {
   const chainId = convertStringToNumber(req.query.chainId)
 
+  // tslint:disable-next-line:strict-type-predicates
   if (!chainId || typeof chainId !== 'number') {
     res.status(200).send({
       id: req.body.id,
@@ -484,15 +297,7 @@ app.post('/rpc', async (req, res) => {
 })
 
 app.get('/chain-data', async (req, res) => {
-  const chainId = convertStringToNumber(req.query.chainId)
-
-  if (!chainId || typeof chainId !== 'number') {
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: 'Missing or invalid chainId parameter'
-    })
-  }
+  const chainId = verifyChainId(req, res)
 
   try {
     const chainData = getChainData(chainId, true)
@@ -503,12 +308,7 @@ app.get('/chain-data', async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
-    res.status(500).send({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message
-    })
+    sendErrorMessage(res, error)
   }
 })
 
