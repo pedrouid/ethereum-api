@@ -1,131 +1,109 @@
-import axios, { AxiosInstance } from 'axios'
-import {
-  IAssetData,
-  IBlockScoutTx,
-  IBlockScoutTokenTx,
-  IParsedTx,
-  ITxOperation
-} from './types'
-import { multiply, isNumber, convertStringToNumber } from './bignumber'
-import { getChainData, isSuccessful } from './utilities'
-import { lookupMethod } from './method-registry'
-import { rpcGetAccountBalance } from './rpc'
+import axios, { AxiosInstance } from "axios";
+import { IAssetData, IBlockScoutTx, IBlockScoutTokenTx, IParsedTx, ITxOperation } from "./types";
+import { multiply, isNumber, convertStringToNumber } from "./bignumber";
+import { getChainData, isSuccessful } from "./utilities";
+import { lookupMethod } from "./method-registry";
+import { rpcGetAccountBalance } from "./rpc";
 
 const api: AxiosInstance = axios.create({
-  baseURL: 'https://blockscout.com/',
+  baseURL: "https://blockscout.com/",
   timeout: 30000, // 30 secs
   headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-})
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+});
 
 const fetchAndParseTokenBalance = async (
   token: IAssetData,
   address: string,
-  chainId: number
+  chainId: number,
 ): Promise<IAssetData> => {
-  const tokenBalanceRes = await apiGetAccountTokenBalance(
-    address,
-    chainId,
-    token.contractAddress
-  )
+  const tokenBalanceRes = await apiGetAccountTokenBalance(address, chainId, token.contractAddress);
 
-  const tokenBalance = isSuccessful(tokenBalanceRes)
-    ? tokenBalanceRes.data.result
-    : []
+  const tokenBalance = isSuccessful(tokenBalanceRes) ? tokenBalanceRes.data.result : [];
 
-  if (
-    tokenBalance &&
-    isNumber(tokenBalance) &&
-    convertStringToNumber(tokenBalance)
-  ) {
-    token.balance = tokenBalance
+  if (tokenBalance && isNumber(tokenBalance) && convertStringToNumber(tokenBalance)) {
+    token.balance = tokenBalance;
   }
 
-  return token
+  return token;
+};
+
+export async function apiGetAccountBalance(address: string, chainId: number) {
+  const chainData = getChainData(chainId);
+  const chain = chainData.chain.toLowerCase();
+  const network = chainData.network.toLowerCase();
+  const module = "account";
+  const action = "balance";
+  const url = `/${chain}/${network}/api?module=${module}&action=${action}&address=${address}`;
+  const result = await api.get(url);
+  return result;
 }
 
-export async function apiGetAccountBalance (address: string, chainId: number) {
-  const chainData = getChainData(chainId)
-  const chain = chainData.chain.toLowerCase()
-  const network = chainData.network.toLowerCase()
-  const module = 'account'
-  const action = 'balance'
-  const url = `/${chain}/${network}/api?module=${module}&action=${action}&address=${address}`
-  const result = await api.get(url)
-  return result
-}
+export async function apiGetAccountNativeCurrency(address: string, chainId: number) {
+  const chainData = getChainData(chainId);
 
-export async function apiGetAccountNativeCurrency (
-  address: string,
-  chainId: number
-) {
-  const chainData = getChainData(chainId)
+  const nativeCurrency = chainData.native_currency;
 
-  const nativeCurrency = chainData.native_currency
+  const balanceRes = await apiGetAccountBalance(address, chainId);
 
-  const balanceRes = await apiGetAccountBalance(address, chainId)
-
-  let nativeBalance = isSuccessful(balanceRes) ? balanceRes.data.result : 0
+  let nativeBalance = isSuccessful(balanceRes) ? balanceRes.data.result : 0;
 
   if (!nativeBalance) {
-    nativeBalance = await rpcGetAccountBalance(address, chainId)
+    nativeBalance = await rpcGetAccountBalance(address, chainId);
   }
 
-  nativeCurrency.balance = `${nativeBalance}`
+  nativeCurrency.balance = `${nativeBalance}`;
 
-  return nativeCurrency
+  return nativeCurrency;
 }
 
-export async function apiGetTokenInfo (
+export async function apiGetTokenInfo(contractAddress: string, chainId: number) {
+  const chainData = getChainData(chainId);
+  const chain = chainData.chain.toLowerCase();
+  const network = chainData.network.toLowerCase();
+  const module = "token";
+  const action = "getToken";
+  const url = `/${chain}/${network}/api?module=${module}&action=${action}&contractaddress=${contractAddress}`;
+  const result = await api.get(url);
+  return result;
+}
+
+export async function apiGetAccountTokenList(address: string, chainId: number) {
+  const chainData = getChainData(chainId);
+  const chain = chainData.chain.toLowerCase();
+  const network = chainData.network.toLowerCase();
+  const module = "account";
+  const action = "tokenlist";
+  const url = `/${chain}/${network}/api?module=${module}&action=${action}&address=${address}`;
+  const result = await api.get(url);
+  return result;
+}
+
+export async function apiGetAccountTokenBalance(
+  address: string,
+  chainId: number,
   contractAddress: string,
-  chainId: number
 ) {
-  const chainData = getChainData(chainId)
-  const chain = chainData.chain.toLowerCase()
-  const network = chainData.network.toLowerCase()
-  const module = 'token'
-  const action = 'getToken'
-  const url = `/${chain}/${network}/api?module=${module}&action=${action}&contractaddress=${contractAddress}`
-  const result = await api.get(url)
-  return result
+  const chainData = getChainData(chainId);
+  const chain = chainData.chain.toLowerCase();
+  const network = chainData.network.toLowerCase();
+  const module = "account";
+  const action = "tokenbalance";
+  const url = `/${chain}/${network}/api?module=${module}&action=${action}&contractaddress=${contractAddress}&address=${address}`;
+  const result = await api.get(url);
+  return result;
 }
 
-export async function apiGetAccountTokenList (address: string, chainId: number) {
-  const chainData = getChainData(chainId)
-  const chain = chainData.chain.toLowerCase()
-  const network = chainData.network.toLowerCase()
-  const module = 'account'
-  const action = 'tokenlist'
-  const url = `/${chain}/${network}/api?module=${module}&action=${action}&address=${address}`
-  const result = await api.get(url)
-  return result
-}
-
-export async function apiGetAccountTokenBalance (
+export async function apiGetAccountTokenAsset(
   address: string,
   chainId: number,
-  contractAddress: string
+  contractAddress: string,
 ) {
-  const chainData = getChainData(chainId)
-  const chain = chainData.chain.toLowerCase()
-  const network = chainData.network.toLowerCase()
-  const module = 'account'
-  const action = 'tokenbalance'
-  const url = `/${chain}/${network}/api?module=${module}&action=${action}&contractaddress=${contractAddress}&address=${address}`
-  const result = await api.get(url)
-  return result
-}
+  const tokenInfoRes = await apiGetTokenInfo(contractAddress, chainId);
 
-export async function apiGetAccountTokenAsset (
-  address: string,
-  chainId: number,
-  contractAddress: string
-) {
-  const tokenInfoRes = await apiGetTokenInfo(contractAddress, chainId)
-
-  const tokenInfo = isSuccessful(tokenInfoRes) ? tokenInfoRes.data.result : null
+  const tokenInfo = isSuccessful(tokenInfoRes) ? tokenInfoRes.data.result : null;
 
   if (tokenInfo) {
     let token: IAssetData = {
@@ -133,85 +111,72 @@ export async function apiGetAccountTokenAsset (
       name: tokenInfo.name,
       decimals: tokenInfo.decimals,
       contractAddress: tokenInfo.contractAddress,
-      balance: ''
-    }
+      balance: "",
+    };
 
-    token = await fetchAndParseTokenBalance(token, address, chainId)
+    token = await fetchAndParseTokenBalance(token, address, chainId);
 
-    return token
+    return token;
   } else {
-    throw new Error('Could not find token information')
+    throw new Error("Could not find token information");
   }
 }
 
-export async function apiGetAccountAssets (
-  address: string,
-  chainId: number
-): Promise<IAssetData[]> {
-  const nativeCurrency = await apiGetAccountNativeCurrency(address, chainId)
+export async function apiGetAccountAssets(address: string, chainId: number): Promise<IAssetData[]> {
+  const nativeCurrency = await apiGetAccountNativeCurrency(address, chainId);
 
-  const tokenListRes = await apiGetAccountTokenList(address, chainId)
-  const tokenList: IAssetData[] = isSuccessful(tokenListRes)
-    ? tokenListRes.data.result
-    : []
+  const tokenListRes = await apiGetAccountTokenList(address, chainId);
+  const tokenList: IAssetData[] = isSuccessful(tokenListRes) ? tokenListRes.data.result : [];
 
   let tokens: IAssetData[] = await Promise.all(
-    tokenList.map((token: IAssetData) =>
-      fetchAndParseTokenBalance(token, address, chainId)
-    )
-  )
+    tokenList.map((token: IAssetData) => fetchAndParseTokenBalance(token, address, chainId)),
+  );
   tokens = tokens.filter(
-    token =>
-      !!Number(token.balance) &&
-      !!token.balance &&
-      !!token.decimals &&
-      !!token.name
-  )
+    token => !!Number(token.balance) && !!token.balance && !!token.decimals && !!token.name,
+  );
 
-  const assets: IAssetData[] = [nativeCurrency, ...tokens]
+  const assets: IAssetData[] = [nativeCurrency, ...tokens];
 
-  return assets
+  return assets;
 }
 
-export async function apiGetAccountTxList (address: string, chainId: number) {
-  const chainData = getChainData(chainId)
-  const chain = chainData.chain.toLowerCase()
-  const network = chainData.network.toLowerCase()
-  const module = 'account'
-  const action = 'txlist'
-  const url = `/${chain}/${network}/api?module=${module}&action=${action}&address=${address}`
-  const result = await api.get(url)
-  return result
+export async function apiGetAccountTxList(address: string, chainId: number) {
+  const chainData = getChainData(chainId);
+  const chain = chainData.chain.toLowerCase();
+  const network = chainData.network.toLowerCase();
+  const module = "account";
+  const action = "txlist";
+  const url = `/${chain}/${network}/api?module=${module}&action=${action}&address=${address}`;
+  const result = await api.get(url);
+  return result;
 }
 
-export async function apiGetAccountTokenTx (address: string, chainId: number) {
-  const chainData = getChainData(chainId)
-  const chain = chainData.chain.toLowerCase()
-  const network = chainData.network.toLowerCase()
-  const module = 'account'
-  const action = 'tokentx'
-  const url = `/${chain}/${network}/api?module=${module}&action=${action}&address=${address}`
-  const result = await api.get(url)
-  return result
+export async function apiGetAccountTokenTx(address: string, chainId: number) {
+  const chainData = getChainData(chainId);
+  const chain = chainData.chain.toLowerCase();
+  const network = chainData.network.toLowerCase();
+  const module = "account";
+  const action = "tokentx";
+  const url = `/${chain}/${network}/api?module=${module}&action=${action}&address=${address}`;
+  const result = await api.get(url);
+  return result;
 }
 
-export async function apiGetAccountTransactions (
+export async function apiGetAccountTransactions(
   address: string,
-  chainId: number
+  chainId: number,
 ): Promise<IParsedTx[]> {
-  const txListRes = await apiGetAccountTxList(address, chainId)
-  const txList: IBlockScoutTx[] = isSuccessful(txListRes)
-    ? txListRes.data.result
-    : []
+  const txListRes = await apiGetAccountTxList(address, chainId);
+  const txList: IBlockScoutTx[] = isSuccessful(txListRes) ? txListRes.data.result : [];
 
-  let transactions: IParsedTx[] = txList.map(
+  const transactions: IParsedTx[] = txList.map(
     (tx: IBlockScoutTx): IParsedTx => {
       const asset: IAssetData = {
-        symbol: 'ETH',
-        name: 'Ethereum',
-        decimals: '18',
-        contractAddress: ''
-      }
+        symbol: "ETH",
+        name: "Ethereum",
+        decimals: "18",
+        contractAddress: "",
+      };
 
       const parsedTx: IParsedTx = {
         timestamp: multiply(tx.timeStamp, 1000),
@@ -224,18 +189,18 @@ export async function apiGetAccountTransactions (
         fee: multiply(tx.gasPrice, tx.gasUsed),
         value: tx.value,
         input: tx.input,
-        error: tx.isError === '1',
+        error: tx.isError === "1",
         asset,
-        operations: []
-      }
-      return parsedTx
-    }
-  )
+        operations: [],
+      };
+      return parsedTx;
+    },
+  );
 
-  const tokenTxnsRes = await apiGetAccountTokenTx(address, chainId)
+  const tokenTxnsRes = await apiGetAccountTokenTx(address, chainId);
   const tokenTxns: IBlockScoutTokenTx[] = isSuccessful(tokenTxnsRes)
     ? tokenTxnsRes.data.result
-    : []
+    : [];
 
   await Promise.all(
     tokenTxns.map(async (tokenTx: IBlockScoutTokenTx) => {
@@ -243,42 +208,40 @@ export async function apiGetAccountTransactions (
         symbol: tokenTx.tokenSymbol,
         name: tokenTx.tokenName,
         decimals: tokenTx.tokenDecimal,
-        contractAddress: tokenTx.contractAddress
-      }
+        contractAddress: tokenTx.contractAddress,
+      };
 
-      const functionHash = tokenTx.input.substring(0, 10)
-      const functionMethod = await lookupMethod(functionHash)
+      const functionHash = tokenTx.input.substring(0, 10);
+      const functionMethod = await lookupMethod(functionHash);
 
       const functionName =
-        functionMethod && functionMethod.name
-          ? functionMethod.name
-          : functionHash
+        functionMethod && functionMethod.name ? functionMethod.name : functionHash;
 
       const operation: ITxOperation = {
         asset,
         value: tokenTx.value,
         from: tokenTx.from,
         to: tokenTx.to,
-        functionName
-      }
+        functionName,
+      };
 
-      let matchingTx = false
+      let matchingTx = false;
 
       for (const tx of transactions) {
         if (tokenTx.hash.toLowerCase() === tx.hash.toLowerCase()) {
-          tx.operations.push(operation)
-          matchingTx = true
-          break
+          tx.operations.push(operation);
+          matchingTx = true;
+          break;
         }
       }
 
       if (!matchingTx) {
         const asset: IAssetData = {
-          symbol: 'ETH',
-          name: 'Ethereum',
-          decimals: '18',
-          contractAddress: ''
-        }
+          symbol: "ETH",
+          name: "Ethereum",
+          decimals: "18",
+          contractAddress: "",
+        };
 
         const parsedTx: IParsedTx = {
           timestamp: multiply(tokenTx.timeStamp, 100),
@@ -293,17 +256,15 @@ export async function apiGetAccountTransactions (
           input: tokenTx.input,
           error: false,
           asset,
-          operations: []
-        }
+          operations: [],
+        };
 
-        transactions.push(parsedTx)
+        transactions.push(parsedTx);
       }
-    })
-  )
+    }),
+  );
 
-  transactions.sort(
-    (a, b) => parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10)
-  )
+  transactions.sort((a, b) => parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10));
 
-  return transactions
+  return transactions;
 }

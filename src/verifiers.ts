@@ -1,41 +1,38 @@
-import { FastifyRequest, FastifyResponse } from './types'
-import { sendInvalidParamError } from './errors'
-import { sanitizeHex } from './utilities'
-import { convertStringToNumber } from './bignumber'
+import { FastifyRequest, FastifyResponse } from "./types";
+import { sendInvalidParamError } from "./errors";
+import { sanitizeHex } from "./utilities";
+import { convertStringToNumber } from "./bignumber";
 
-export function verifyParam (
+export function verifyParam(
   req: FastifyRequest,
   res: FastifyResponse,
   param: string,
   expectedType: string,
-  sanitizer: any
+  sanitizer: any,
 ) {
-  const value = sanitizer(req.query[param])
+  const value = sanitizer(req.query[param]);
 
   // tslint:disable-next-line:strict-type-predicates
   if (!value || typeof value !== expectedType) {
-    sendInvalidParamError(res, param)
+    sendInvalidParamError(res, param);
   }
 
-  return value
+  return value;
 }
 
-export function verifyAddress (req: FastifyRequest, res: FastifyResponse) {
-  return verifyParam(req, res, 'address', 'string', sanitizeHex)
+export function verifyAddress(req: FastifyRequest, res: FastifyResponse) {
+  return verifyParam(req, res, "address", "string", sanitizeHex);
 }
 
-export function verifyChainId (req: FastifyRequest, res: FastifyResponse) {
-  return verifyParam(req, res, 'chainId', 'number', convertStringToNumber)
+export function verifyChainId(req: FastifyRequest, res: FastifyResponse) {
+  return verifyParam(req, res, "chainId", "number", convertStringToNumber);
 }
 
-export function verifyContractAddress (
-  req: FastifyRequest,
-  res: FastifyResponse
-) {
-  return verifyParam(req, res, 'contractAddress', 'string', sanitizeHex)
+export function verifyContractAddress(req: FastifyRequest, res: FastifyResponse) {
+  return verifyParam(req, res, "contractAddress", "string", sanitizeHex);
 }
 
-export function verifyData (req: FastifyRequest, res: FastifyResponse) {
-  const sanitizeData = (input: string) => sanitizeHex(req.query.data) || '0x'
-  return verifyParam(req, res, 'data', 'number', sanitizeData)
+export function verifyData(req: FastifyRequest, res: FastifyResponse) {
+  const sanitizeData = () => sanitizeHex(req.query.data) || "0x";
+  return verifyParam(req, res, "data", "number", sanitizeData);
 }

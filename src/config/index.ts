@@ -1,16 +1,16 @@
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
-const env = process.env.NODE_ENV || 'development'
-const debug = env !== 'production'
+const env = process.env.NODE_ENV || "development";
+const debug = env !== "production";
 
 export default {
   env: env,
   debug: debug,
-  port: process.env.PORT || env === 'production' ? 5000 : 5001,
+  port: process.env.PORT || env === "production" ? 5000 : 5001,
   infura: {
     id: process.env.INFURA_PROJECT_ID,
-    secret: process.env.INFURA_PROJECT_SECRET
-  }
-}
+    secret: process.env.INFURA_PROJECT_SECRET,
+  },
+};

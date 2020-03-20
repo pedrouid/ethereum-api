@@ -1,20 +1,14 @@
-import axios from 'axios'
-import {
-  padRight,
-  removeHexPrefix,
-  payloadId,
-  hexToUtf8,
-  getChainData
-} from './utilities'
-import { IMethod } from './types'
+import axios from "axios";
+import { padRight, removeHexPrefix, payloadId, hexToUtf8, getChainData } from "./utilities";
+import { IMethod } from "./types";
 
-function parseSignature (signature: string) {
-  let name: string = ''
+function parseSignature(signature: string) {
+  let name = "";
 
-  const nameMatches = signature.match(/\w+(?=\()/)
+  const nameMatches = signature.match(/\w+(?=\()/);
 
   if (nameMatches && nameMatches.length) {
-    name = nameMatches[0]
+    name = nameMatches[0];
   }
 
   name =
@@ -22,76 +16,74 @@ function parseSignature (signature: string) {
     name
       .slice(1)
       .split(/(?=[A-Z])/)
-      .join(' ')
+      .join(" ");
 
-  let args: string[] = []
+  let args: string[] = [];
 
-  const argsMatches = signature.match(/\(.+\)/)
+  const argsMatches = signature.match(/\(.+\)/);
 
   if (argsMatches && argsMatches.length) {
-    args = argsMatches[0].slice(1, -1).split(',')
+    args = argsMatches[0].slice(1, -1).split(",");
   }
 
   const result = {
     name,
-    args: args.map((arg: string) => ({ type: arg }))
-  }
+    args: args.map((arg: string) => ({ type: arg })),
+  };
 
-  return result
+  return result;
 }
 
 const registryMap = {
-  '1': '0x44691B39d1a75dC4E0A0346CBB15E310e6ED1E86'
-}
+  "1": "0x44691B39d1a75dC4E0A0346CBB15E310e6ED1E86",
+};
 
-export const lookupMethod = async (
-  methodHash: string
-): Promise<IMethod | null> => {
-  let result = null
+export const lookupMethod = async (methodHash: string): Promise<IMethod | null> => {
+  let result = null;
 
-  const chainId = 1
-  const registryAddress = registryMap[chainId]
-  const rpcUrl = getChainData(chainId).rpc_url
+  const chainId = 1;
+  const registryAddress = registryMap[chainId];
+  const rpcUrl = getChainData(chainId).rpc_url;
 
-  const functionHash = '0xb46bcdaa'
-  const dataString = functionHash + padRight(removeHexPrefix(methodHash), 64)
+  const functionHash = "0xb46bcdaa";
+  const dataString = functionHash + padRight(removeHexPrefix(methodHash), 64);
 
   const response = await axios.post(rpcUrl, {
-    jsonrpc: '2.0',
+    jsonrpc: "2.0",
     id: payloadId(),
-    method: 'eth_call',
+    method: "eth_call",
     params: [
       {
         to: registryAddress,
-        data: dataString
+        data: dataString,
       },
-      'latest'
-    ]
-  })
+      "latest",
+    ],
+  });
 
   if (response.data && response.data.result) {
-    const signature = hexToUtf8(response.data.result).trim()
+    const signature = hexToUtf8(response.data.result).trim();
     if (signature) {
-      const parsed = parseSignature(signature)
+      const parsed = parseSignature(signature);
 
-      result = { signature, ...parsed }
+      result = { signature, ...parsed };
     }
   } else {
     const response = await axios.get(
       `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${removeHexPrefix(
-        methodHash
-      )}`
-    )
+        methodHash,
+      )}`,
+    );
 
     if (response.data) {
-      const signature = response.data.trim()
+      const signature = response.data.trim();
       if (signature) {
-        const parsed = parseSignature(signature)
+        const parsed = parseSignature(signature);
 
-        result = { signature, ...parsed }
+        result = { signature, ...parsed };
       }
     }
   }
 
-  return result
-}
+  return result;
+};
