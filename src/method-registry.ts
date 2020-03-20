@@ -39,7 +39,7 @@ const registryMap = {
 };
 
 export const lookupMethod = async (methodHash: string): Promise<IMethod | null> => {
-  let result = null;
+  let result: any = null;
 
   const chainId = 1;
   const registryAddress = registryMap[chainId];
