@@ -230,7 +230,7 @@ You can find a reference on OpenSea API at https://docs.opensea.io/reference#get
 Required Params: address, chainId, contractAddress
 
 ```bash
-GET https://ethereum-api.xyz/account-assets?address=0xfeBD6abD30D8E1AD477957C376efb79d1758B8c1&chainId=1&contractAddress=0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359
+GET https://ethereum-api.xyz/token-balance?address=0xfeBD6abD30D8E1AD477957C376efb79d1758B8c1&contractAddress=0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359&chainId=1
 
 # Response
 {
