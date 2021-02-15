@@ -19,9 +19,19 @@ const fetchAndParseTokenBalance = async (
   address: string,
   chainId: number,
 ): Promise<IAssetData> => {
-  const tokenBalanceRes = await apiGetAccountTokenBalance(address, chainId, token.contractAddress);
-
-  const tokenBalance = isSuccessful(tokenBalanceRes) ? tokenBalanceRes.data.result : [];
+  let tokenBalance = "0";
+  try {
+    const tokenBalanceRes = await apiGetAccountTokenBalance(
+      address,
+      chainId,
+      token.contractAddress,
+    );
+    if (isSuccessful(tokenBalanceRes)) {
+      tokenBalanceRes.data.result;
+    }
+  } catch (e) {
+    // ignore error
+  }
 
   if (tokenBalance && isNumber(tokenBalance) && convertStringToNumber(tokenBalance)) {
     token.balance = tokenBalance;
@@ -46,13 +56,13 @@ export async function apiGetAccountNativeCurrency(address: string, chainId: numb
 
   const nativeCurrency = chainData.native_currency;
 
-  let nativeBalance = 0
+  let nativeBalance = 0;
   try {
     const balanceRes = await apiGetAccountBalance(address, chainId);
     if (isSuccessful(balanceRes)) {
-      nativeBalance = balanceRes.data.result
+      nativeBalance = balanceRes.data.result;
     }
-  } catch(e) {
+  } catch (e) {
     // ignore error
   }
 
@@ -107,9 +117,15 @@ export async function apiGetAccountTokenAsset(
   chainId: number,
   contractAddress: string,
 ) {
-  const tokenInfoRes = await apiGetTokenInfo(contractAddress, chainId);
-
-  const tokenInfo = isSuccessful(tokenInfoRes) ? tokenInfoRes.data.result : null;
+  let tokenInfo: any = null;
+  try {
+    const tokenInfoRes = await apiGetTokenInfo(contractAddress, chainId);
+    if (isSuccessful(tokenInfoRes)) {
+      tokenInfoRes.data.result;
+    }
+  } catch (e) {
+    // ignore error
+  }
 
   if (tokenInfo) {
     let token: IAssetData = {
@@ -131,8 +147,15 @@ export async function apiGetAccountTokenAsset(
 export async function apiGetAccountAssets(address: string, chainId: number): Promise<IAssetData[]> {
   const nativeCurrency = await apiGetAccountNativeCurrency(address, chainId);
 
-  const tokenListRes = await apiGetAccountTokenList(address, chainId);
-  const tokenList: IAssetData[] = isSuccessful(tokenListRes) ? tokenListRes.data.result : [];
+  let tokenList: IAssetData[] = [];
+  try {
+    const tokenListRes = await apiGetAccountTokenList(address, chainId);
+    if (isSuccessful(tokenListRes)) {
+      tokenListRes.data.result;
+    }
+  } catch (e) {
+    // ignore error
+  }
 
   let tokens: IAssetData[] = await Promise.all(
     tokenList.map((token: IAssetData) => fetchAndParseTokenBalance(token, address, chainId)),
@@ -172,8 +195,15 @@ export async function apiGetAccountTransactions(
   address: string,
   chainId: number,
 ): Promise<IParsedTx[]> {
-  const txListRes = await apiGetAccountTxList(address, chainId);
-  const txList: IBlockScoutTx[] = isSuccessful(txListRes) ? txListRes.data.result : [];
+  let txList: IBlockScoutTx[] = [];
+  try {
+    const txListRes = await apiGetAccountTxList(address, chainId);
+    if (isSuccessful(txListRes)) {
+      txList = txListRes.data.result;
+    }
+  } catch (e) {
+    // ignore
+  }
 
   const transactions: IParsedTx[] = txList.map(
     (tx: IBlockScoutTx): IParsedTx => {
@@ -203,10 +233,16 @@ export async function apiGetAccountTransactions(
     },
   );
 
-  const tokenTxnsRes = await apiGetAccountTokenTx(address, chainId);
-  const tokenTxns: IBlockScoutTokenTx[] = isSuccessful(tokenTxnsRes)
-    ? tokenTxnsRes.data.result
-    : [];
+  let tokenTxns: IBlockScoutTokenTx[] = [];
+
+  try {
+    const tokenTxnsRes = await apiGetAccountTokenTx(address, chainId);
+    if (isSuccessful(tokenTxnsRes)) {
+      tokenTxns = tokenTxnsRes.data.result;
+    }
+  } catch (e) {
+    // ignore
+  }
 
   await Promise.all(
     tokenTxns.map(async (tokenTx: IBlockScoutTokenTx) => {
