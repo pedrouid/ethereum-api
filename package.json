@@ -33,7 +33,7 @@
     "start": "npm run build && node ./dist",
     "test": "env TS_NODE_PROJECT=\"tsconfig.json\" mocha --exit -r ts-node/register ./test/**/*.spec.ts",
     "lint": "eslint -c  --fix './src/**/*.ts'",
-    "deploy": "NODE_ENV=production pm2 start ./build --name=server"
+    "deploy": "NODE_ENV=production pm2 start ./dist --name=server"
   },
   "dependencies": {
     "@pedrouid/pino-utils": "^1.0.1",
