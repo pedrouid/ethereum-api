@@ -46,9 +46,15 @@ export async function apiGetAccountNativeCurrency(address: string, chainId: numb
 
   const nativeCurrency = chainData.native_currency;
 
-  const balanceRes = await apiGetAccountBalance(address, chainId);
-
-  let nativeBalance = isSuccessful(balanceRes) ? balanceRes.data.result : 0;
+  let nativeBalance = 0
+  try {
+    const balanceRes = await apiGetAccountBalance(address, chainId);
+    if (isSuccessful(balanceRes)) {
+      nativeBalance = balanceRes.data.result
+    }
+  } catch(e) {
+    // ignore error
+  }
 
   if (!nativeBalance) {
     nativeBalance = await rpcGetAccountBalance(address, chainId);

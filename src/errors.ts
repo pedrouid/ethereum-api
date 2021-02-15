@@ -1,6 +1,6 @@
-import { FastifyResponse } from "./types";
+import { FastifyReply } from "fastify";
 
-export function sendInvalidParamError(res: FastifyResponse, param: string) {
+export function sendInvalidParamError(res: FastifyReply, param: string) {
   res.status(500).send({
     success: false,
     error: "Internal Server Error",
@@ -8,7 +8,7 @@ export function sendInvalidParamError(res: FastifyResponse, param: string) {
   });
 }
 
-export function sendErrorMessage(res: FastifyResponse, error: Error) {
+export function sendErrorMessage(res: FastifyReply, error: Error) {
   res.status(500).send({
     success: false,
     error: "Internal Server Error",

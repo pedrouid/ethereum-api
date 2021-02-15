@@ -1,5 +1,8 @@
-import fastify from "fastify";
-import { IncomingMessage, ServerResponse } from "http";
+import pino from "pino";
+
+export interface HttpServiceOptions {
+  logger?: string | pino.Logger;
+}
 
 export interface IAssetData {
   symbol: string;
@@ -187,13 +190,3 @@ export type IJsonRpcRequest = {
   method: string;
   params: any[];
 };
-
-export type FastifyRequest = fastify.FastifyRequest<
-  IncomingMessage,
-  fastify.DefaultQuery,
-  fastify.DefaultParams,
-  fastify.DefaultHeaders,
-  any
->;
-
-export type FastifyResponse = fastify.FastifyReply<ServerResponse>;
