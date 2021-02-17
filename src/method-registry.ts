@@ -1,6 +1,9 @@
 import axios from "axios";
-import { padRight, removeHexPrefix, payloadId, hexToUtf8, getChainData } from "./utilities";
+import * as encUtils from "enc-utils";
+
+import { getChainData } from "./utilities";
 import { IMethod } from "./types";
+import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
 
 function parseSignature(signature: string) {
   let name = "";
@@ -46,33 +49,28 @@ export const lookupMethod = async (methodHash: string): Promise<IMethod | null> 
   const rpcUrl = getChainData(chainId).rpc_url;
 
   const functionHash = "0xb46bcdaa";
-  const dataString = functionHash + padRight(removeHexPrefix(methodHash), 64);
+  const dataString = functionHash + encUtils.padRight(encUtils.removeHexPrefix(methodHash), 64);
+  const request = formatJsonRpcRequest("eth_call", [
+    {
+      to: registryAddress,
+      data: dataString,
+    },
+    "latest",
+  ]);
 
-  const response = await axios.post(rpcUrl, {
-    jsonrpc: "2.0",
-    id: payloadId(),
-    method: "eth_call",
-    params: [
-      {
-        to: registryAddress,
-        data: dataString,
-      },
-      "latest",
-    ],
-  });
+  const response = await axios.post(rpcUrl, request);
 
   if (response.data && response.data.result) {
-    const signature = hexToUtf8(response.data.result).trim();
+    const signature = encUtils.hexToUtf8(response.data.result).trim();
     if (signature) {
       const parsed = parseSignature(signature);
 
       result = { signature, ...parsed };
     }
   } else {
+    const method = encUtils.removeHexPrefix(methodHash);
     const response = await axios.get(
-      `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${removeHexPrefix(
-        methodHash,
-      )}`,
+      `https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/${method}`,
     );
 
     if (response.data) {

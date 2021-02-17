@@ -1,6 +1,8 @@
 import axios, { AxiosInstance } from "axios";
+import * as encUtils from "enc-utils";
+
 import { IGasPrices, IGasGuzzlerRaw, IGasGuzzler } from "./types";
-import { convertStringToNumber, divide, multiply, formatFixedDecimals } from "./bignumber";
+import { divide, multiply } from "./utilities";
 
 const api: AxiosInstance = axios.create({
   baseURL: "https://ethgasstation.info/",
@@ -16,16 +18,16 @@ export const apiGetGasPrices = async (): Promise<IGasPrices> => {
   const result: IGasPrices = {
     timestamp: Date.now(),
     slow: {
-      time: convertStringToNumber(multiply(data.safeLowWait, 60)),
-      price: convertStringToNumber(divide(data.safeLow, 10)),
+      time: encUtils.utf8ToNumber(multiply(data.safeLowWait, 60)),
+      price: encUtils.utf8ToNumber(divide(data.safeLow, 10)),
     },
     average: {
-      time: convertStringToNumber(multiply(data.avgWait, 60)),
-      price: convertStringToNumber(divide(data.average, 10)),
+      time: encUtils.utf8ToNumber(multiply(data.avgWait, 60)),
+      price: encUtils.utf8ToNumber(divide(data.average, 10)),
     },
     fast: {
-      time: convertStringToNumber(multiply(data.fastestWait, 60)),
-      price: convertStringToNumber(divide(data.fastest, 10)),
+      time: encUtils.utf8ToNumber(multiply(data.fastestWait, 60)),
+      price: encUtils.utf8ToNumber(divide(data.fastest, 10)),
     },
   };
   return result;
@@ -35,8 +37,8 @@ export const apiGetGasGuzzlers = async (): Promise<IGasGuzzler[]> => {
   const { data } = await api.get(`/json/gasguzz.json`);
   const result = data.map((guzzlerRaw: IGasGuzzlerRaw) => ({
     address: guzzlerRaw.to_address,
-    pct: convertStringToNumber(formatFixedDecimals(`${guzzlerRaw.pcttot}`, 2)),
-    gasused: convertStringToNumber(guzzlerRaw.gasused),
+    pct: encUtils.utf8ToNumber(`${guzzlerRaw.pcttot}`).toFixed(2),
+    gasused: encUtils.utf8ToNumber(String(guzzlerRaw.gasused)),
     id: guzzlerRaw.ID,
   }));
   return result;
