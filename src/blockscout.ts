@@ -1,7 +1,9 @@
 import axios, { AxiosInstance } from "axios";
+import BN from "bn.js";
+import * as encUtils from "enc-utils";
+
 import { IAssetData, IBlockScoutTx, IBlockScoutTokenTx, IParsedTx, ITxOperation } from "./types";
-import { multiply, isNumber, convertStringToNumber } from "./bignumber";
-import { getChainData, isSuccessful } from "./utilities";
+import { getChainData, isNumber, isSuccessful, multiply } from "./utilities";
 import { lookupMethod } from "./method-registry";
 import { rpcGetAccountBalance } from "./rpc";
 
@@ -33,7 +35,7 @@ const fetchAndParseTokenBalance = async (
     // ignore error
   }
 
-  if (tokenBalance && isNumber(tokenBalance) && convertStringToNumber(tokenBalance)) {
+  if (tokenBalance && isNumber(tokenBalance) && encUtils.utf8ToNumber(tokenBalance)) {
     token.balance = tokenBalance;
   }
 

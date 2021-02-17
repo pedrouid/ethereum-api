@@ -19,7 +19,6 @@ import {
   rpcPostRequest,
 } from "./rpc";
 import { getChainData } from "./utilities";
-import { convertStringToNumber } from "./bignumber";
 import supportedChains from "./chains";
 import { apiGetAccountCollectibles } from "./opensea";
 import { apiGetEthPrices, apiGetDaiPrices } from "./cryptocompare";
@@ -39,6 +38,7 @@ import {
   GetTokenBalanceRequest,
   PostRpcRequest,
 } from "./rest";
+import { formatJsonRpcError } from "@json-rpc-tools/utils";
 
 export class HttpService {
   public app: FastifyInstance;
@@ -291,32 +291,20 @@ export class HttpService {
     });
 
     this.app.post<PostRpcRequest>("/rpc", async (req, res) => {
-      const chainId = convertStringToNumber(req.query.chainId);
+      const chainId = verifyChainId(req, res);
 
       // tslint:disable-next-line:strict-type-predicates
       if (!chainId || typeof chainId !== "number") {
-        res.status(200).send({
-          id: req.body.id,
-          jsonrpc: "2.0",
-          error: {
-            code: -32000,
-            message: "Missing or invalid chainId parameter",
-          },
-        });
+        res
+          .status(200)
+          .send(formatJsonRpcError(req.body.id, "Missing or invalid chainId parameter"));
       }
 
       try {
         const response = await rpcPostRequest(chainId, req.body);
         res.status(200).send(response.data);
       } catch (error) {
-        res.status(200).send({
-          id: req.body.id,
-          jsonrpc: "2.0",
-          error: {
-            code: -32603,
-            message: "Internal error",
-          },
-        });
+        res.status(200).send(formatJsonRpcError(req.body.id, "Internal error"));
       }
     });
 

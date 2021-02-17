@@ -1,8 +1,8 @@
+import BN from "bn.js";
+import * as encUtils from "enc-utils";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 import { sendInvalidParamError } from "./errors";
-import { sanitizeHex } from "./utilities";
-import { convertStringToNumber } from "./bignumber";
 import {
   RequestWithAddressQuerystring,
   RequestWithChainIdQuerystring,
@@ -32,28 +32,28 @@ export function verifyAddress(
   req: FastifyRequest<RequestWithAddressQuerystring>,
   res: FastifyReply,
 ) {
-  return verifyParam(req, res, "address", "string", sanitizeHex);
+  return verifyParam(req, res, "address", "string", encUtils.sanitizeHex);
 }
 
 export function verifyChainId(
   req: FastifyRequest<RequestWithChainIdQuerystring>,
   res: FastifyReply,
 ) {
-  return verifyParam(req, res, "chainId", "number", convertStringToNumber);
+  return verifyParam(req, res, "chainId", "number", encUtils.utf8ToNumber);
 }
 
 export function verifyContractAddress(
   req: FastifyRequest<RequestWithContractQuerystring>,
   res: FastifyReply,
 ) {
-  return verifyParam(req, res, "contractAddress", "string", sanitizeHex);
+  return verifyParam(req, res, "contractAddress", "string", encUtils.sanitizeHex);
 }
 
 export function verifyData(req: FastifyRequest<RequestWithDataQuerystring>, res: FastifyReply) {
-  const sanitizeData = () => sanitizeHex(req.query.data) || "0x";
+  const sanitizeData = () => encUtils.sanitizeHex(req.query.data) || "0x";
   return verifyParam(req, res, "data", "number", sanitizeData);
 }
 
 export function verifyFiat(req: FastifyRequest<RequestWithFiatQueryString>, res: FastifyReply) {
-  return verifyParam(req, res, "fiat", "string", sanitizeHex);
+  return verifyParam(req, res, "fiat", "string", encUtils.sanitizeHex);
 }
