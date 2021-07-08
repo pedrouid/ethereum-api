@@ -45,8 +45,8 @@
     "fastify-helmet": "^5.1.0",
     "pino": "^6.11.0",
     "pino-pretty": "^4.3.0",
-    "utf8": "^3.0.0",
-    "tslib": "^2.1.0"
+    "tslib": "^2.1.0",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.14",

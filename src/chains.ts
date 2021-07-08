@@ -9,7 +9,7 @@ const supportedChains: IChainData[] = [
     network: "mainnet",
     chain_id: 1,
     network_id: 1,
-    rpc_url: "https://mainnet.infura.io/v3/INFURA_ID",
+    rpc_url: "https://api.mycryptoapi.com/eth",
     native_currency: ETH,
   },
   {
