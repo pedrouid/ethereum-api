@@ -1,5 +1,5 @@
 import { IChainData } from "./types";
-import { CLO, ETH, MATIC, POA, RSK, xDAI } from "./assets";
+import { CLO, ETH, MATIC, POA, RSK, xDAI, MOVR, DEV } from "./assets";
 
 const supportedChains: IChainData[] = [
   {
@@ -171,6 +171,26 @@ const supportedChains: IChainData[] = [
     network_id: 10,
     rpc_url: "https://mainnet.optimism.io/",
     native_currency: ETH,
+  },
+  {
+    name: "Moonriver",
+    short_name: "moonriver",
+    chain: "Moonbeam",
+    network: "mainnet",
+    chain_id: 1285,
+    network_id: 1285,
+    rpc_url: "https://rpc.moonriver.moonbeam.network",
+    native_currency: MOVR,
+  },
+  {
+    name: "Moonbase Alpha",
+    short_name: "moonbase",
+    chain: "Moonbeam",
+    network: "testnet",
+    chain_id: 1287,
+    network_id: 1287,
+    rpc_url: "https://rpc.testnet.moonbeam.network",
+    native_currency: DEV,
   },
 ];
 
