@@ -41,3 +41,16 @@ export const CLO: IAssetData = {
   decimals: "18",
   contractAddress: "",
 };
+
+export const MOVR: IAssetData = {
+  symbol: "MOVR",
+  name: "Moonriver Token",
+  decimals: "18",
+  contractAddress: "",
+};
+export const DEV: IAssetData = {
+  symbol: "DEV",
+  name: "DEV",
+  decimals: "18",
+  contractAddress: "",
+};
