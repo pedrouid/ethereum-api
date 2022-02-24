@@ -1,5 +1,5 @@
 import { IChainData } from "./types";
-import { CLO, ETH, MATIC, POA, RSK, xDAI } from "./assets";
+import { CLO, ETH, MATIC, POA, RSK, xDAI, SolarTest } from "./assets";
 
 const supportedChains: IChainData[] = [
   {
@@ -170,6 +170,16 @@ const supportedChains: IChainData[] = [
     chain_id: 10,
     network_id: 10,
     rpc_url: "https://mainnet.optimism.io/",
+    native_currency: ETH,
+  },
+  {
+    name: "Solar Network Test",
+    short_name: "solar",
+    chain: "Solar",
+    network: "Test",
+    chain_id: 65534,
+    network_id: 65534,
+    rpc_url: "https://test-sct.netwarps.com/",
     native_currency: ETH,
   },
 ];

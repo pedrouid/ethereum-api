@@ -41,3 +41,10 @@ export const CLO: IAssetData = {
   decimals: "18",
   contractAddress: "",
 };
+
+export const SOLAR: IAssetData = {
+  symbol: "SOLAR",
+  name: "Solar",
+  decimals: "18",
+  contractAddress: "",
+};
