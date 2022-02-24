@@ -1,4 +1,4 @@
-FROM nodejs:14-alpine
+FROM node:14-alpine
 
 COPY ./dist /dist
 
