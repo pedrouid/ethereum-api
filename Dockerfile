@@ -1,6 +1,9 @@
 FROM node:14-alpine
 
-COPY ./dist /dist
+COPY package.json /
+RUN npm install --only=production
+
+COPY ./dist /
 
 WORKDIR /dist 
 
