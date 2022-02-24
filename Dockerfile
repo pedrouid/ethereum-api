@@ -1,13 +1,9 @@
-FROM nginx
+FROM nodejs:14-alpine
 
-COPY ./dist /usr/share/nginx/html/
-# update custom nginx conf reason by vue-router
-COPY ./default.conf /etc/nginx/conf.d/
-# run script
-COPY entrypoint.sh /
+COPY ./dist /dist
 
-RUN chmod 755 /entrypoint.sh
+WORKDIR /dist 
 
+EXPOSE 5005
 
-EXPOSE 80
-CMD ["/entrypoint.sh"]
+CMD ["node", "index.js"]
