@@ -1,5 +1,5 @@
 import { IChainData } from "./types";
-import { CLO, ETH, MATIC, POA, RSK, xDAI, SolarTest } from "./assets";
+import { CLO, ETH, MATIC, POA, RSK, xDAI, SOLAR } from "./assets";
 
 const supportedChains: IChainData[] = [
   {
