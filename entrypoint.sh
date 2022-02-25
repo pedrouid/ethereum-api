@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # replace the frented params
 
