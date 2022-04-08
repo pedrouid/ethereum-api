@@ -41,3 +41,10 @@ export const CLO: IAssetData = {
   decimals: "18",
   contractAddress: "",
 };
+
+export const pCKB: IAssetData = {
+  symbol: "pCKB",
+  name: "pCKB",
+  decimals: "18",
+  contractAddress: "",
+};

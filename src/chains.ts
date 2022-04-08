@@ -1,5 +1,5 @@
 import { IChainData } from "./types";
-import { CLO, ETH, MATIC, POA, RSK, xDAI } from "./assets";
+import { CLO, ETH, MATIC, pCKB, POA, RSK, xDAI } from "./assets";
 
 const supportedChains: IChainData[] = [
   {
@@ -171,6 +171,16 @@ const supportedChains: IChainData[] = [
     network_id: 10,
     rpc_url: "https://mainnet.optimism.io/",
     native_currency: ETH,
+  },
+  {
+    name: "Godwoken Testnet v1.0",
+    short_name: "gwtest1",
+    chain: "Godwoken",
+    network: "testnet",
+    chain_id: 868455272153094,
+    network_id: 868455272153094,
+    rpc_url: "https://godwoken-testnet-web3-v1-rpc.ckbapp.dev/",
+    native_currency: pCKB,
   },
 ];
 
