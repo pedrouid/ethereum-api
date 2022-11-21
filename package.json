@@ -40,7 +40,7 @@
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.1",
     "dotenv": "^8.2.0",
-    "fastify": "^3.10.1",
+    "fastify": "^3.29.4",
     "fastify-cors": "^5.2.0",
     "fastify-helmet": "^5.1.0",
     "pino": "^6.11.0",
